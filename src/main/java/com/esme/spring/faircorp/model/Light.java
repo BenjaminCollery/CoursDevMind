@@ -16,16 +16,25 @@ public class Light {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column(nullable = false)
+    private String color;
+
+    @Column(nullable = false)
+    private String brightness;
+
+
     @ManyToOne
     private Room room;
 
     public Light() {
     }
 
-    public Light(Integer level, Status status,Room room) {
+    public Light(Integer level, Status status,Room room, String color , String brightness) {
         this.level = level;
         this.status = status;
         this.room = room;
+        this.color = color;
+        this.brightness = brightness;
     }
 
     public Long getId() {
@@ -55,4 +64,12 @@ public class Light {
     public Room getRoom() {
         return room;
     }
+
+    public String getColor() {return this.color;}
+
+    public void setColor(String color) {this.color = color;}
+
+    public String getBrightness() {return this.brightness;}
+
+    public void setBrightness(String bri) {this.brightness = bri;}
 }

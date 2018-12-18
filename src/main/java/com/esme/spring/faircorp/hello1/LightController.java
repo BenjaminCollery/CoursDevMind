@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Transactional // (3)
 public class LightController {
 
+    public SimpleMqttClient simpleMqttClient;
     @Autowired
     private  LightDao lightDao; // (4)
     @Autowired
@@ -37,6 +38,31 @@ public class LightController {
     public LightDto switchStatus(@PathVariable Long id) {
         Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);
         light.setStatus(light.getStatus() == Status.ON ? Status.OFF: Status.ON);
+
+        this.simpleMqttClient.sendMqtt(id.toString()+"/" + light.getStatus().toString() , "switch");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
+
+        return new LightDto(light);
+    }
+
+    @PutMapping(path = "/{id}/switchcolor/{color}")
+    public LightDto switchStatus(@PathVariable Long id , @PathVariable String color) {
+        Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        light.setColor(color);
+
+        this.simpleMqttClient.sendMqtt(id.toString() + "/" + light.getColor() , "changecolor");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
+
+        return new LightDto(light);
+    }
+
+    @PutMapping(path = "/{id}/switchbrightness/{brightness}")
+    public LightDto switchStatus(@PathVariable Long id , @PathVariable String color, @PathVariable String brightness) {
+        Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        light.setBrightness(brightness);
+
+        this.simpleMqttClient.sendMqtt(light.getBrightness() , "changebri");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
+
         return new LightDto(light);
     }
 
@@ -49,7 +75,7 @@ public class LightController {
         }
 
         if (light == null) {
-            light = lightDao.save(new Light(dto.getLevel(), dto.getStatus(), roomDao.getOne(dto.getRoomId())));
+            light = lightDao.save(new Light(dto.getLevel(), dto.getStatus(), roomDao.getOne(dto.getRoomId()) , dto.getColor(), dto.getBrightness()));
         } else {
             light.setLevel(dto.getLevel());
             light.setStatus(dto.getStatus());
