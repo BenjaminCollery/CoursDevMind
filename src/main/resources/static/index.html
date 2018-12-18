@@ -114,7 +114,7 @@
 
 
 
-var url = "https://faircorp-benjamin.cleverapps.io/api"
+var url = "http://localhost:8080/api"
 
 var building_vue = new Vue({
 
@@ -205,6 +205,8 @@ subscribe: function () {
           console.log("connected and subsribed");
 
 
+
+
            cloudmqtt.on("message", function (topic, payload) {
               console.log("message received from cloudMqtt: " , topic , new TextDecoder("utf-8").decode(payload));
               msg = new TextDecoder("utf-8").decode(payload);
@@ -212,19 +214,35 @@ subscribe: function () {
               this.color_test = msg.toString();
               this.color_test = " salut ";
 
-              if (topic == "switch"){
-                    console.log("premier if");
-                    console.log(building_vue.lightsFromRoom);
 
-                  for (var j in building_vue.lightsFromRoom){
-                        console.log("premier for");
 
-                        if (building_vue.lightsFromRoom[j]["id"] == 1){
-                            console.log("deuxieme if");
-                            building_vue.lightsFromRoom[j]["status"] = msg;
-                            console.log("etat changé");
-                         }
-                  }
+
+              if (topic == "order"){
+
+                    var parsedMsg = msg.toString().split(' ');
+
+                    var lightId = parsedMsg[2];
+                    var roomId = parsedMsg[1];
+                    var buildingId = parsedMsg[0];
+                    var order = parsedMsg[5];
+                    var value = parsedMsg[4];
+
+                    for (var j in building_vue.alllights){
+    		                        if ( building_vue.alllights[j]["id"] == lightId){
+                                        console.log("light ok");
+                                        if(parsedMsg[3] == "changeColor"){
+                                            console.log("change color");
+                                            building_vue.alllights[j]["color"] = value;
+                                        }
+
+
+
+
+    		                        }
+    		         }
+
+
+
               }
 
               console.log(building_vue.lightsFromRoom);

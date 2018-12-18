@@ -1,13 +1,10 @@
 package com.esme.spring.faircorp.hello1;
 
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.*;
 
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
 
 public class SimpleMqttClient {
 
@@ -42,8 +39,30 @@ public class SimpleMqttClient {
         message.setQos(qos);
         sampleClient.publish(topic, message);
         System.out.println("Message published");
-        sampleClient.disconnect();
-        System.out.println("Disconnected");
+
+        sampleClient.subscribe("order");
+
+                sampleClient.setCallback(new MqttCallback() {
+                    public void connectionLost(Throwable cause) {}
+
+                    public void messageArrived(String topic,
+                                               MqttMessage message)
+                            throws Exception {
+                        System.out.println(message.toString());
+
+                        String[] parsedMsg = new String[5];
+
+                        parsedMsg = message.toString().split(" ");
+
+                        // utiliser le message parser pour modifier correctement la base de donnees
+                    }
+
+                    public void deliveryComplete(IMqttDeliveryToken token) {}
+                });
+
+
+        //sampleClient.disconnect();
+        //System.out.println("Disconnected");
 
     } catch(MqttException me) {
         System.out.println("reason "+me.getReasonCode());
