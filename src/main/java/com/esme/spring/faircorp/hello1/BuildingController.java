@@ -29,6 +29,8 @@ public class BuildingController {
 
     @GetMapping
     public List<BuildingDto> findAll(){
+
+
         return buildingDao.findAll()
                 .stream()
                 .map(BuildingDto::new)

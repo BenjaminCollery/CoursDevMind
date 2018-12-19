@@ -60,33 +60,27 @@
         <tr>
             <th>Light ID</th>
             <th>Light Status</th>
-            <th>Light level</th>
             <th>Light color</th>
             <th>Light brightness</th>
-            <th>Switch</th>
             <th>Color</th>
-            <th>Change color</th>
 
         </tr>
         </thead>
         <tbody>
         <tr v-for="light in lightsFromRoom">
             <th>{{light.id}}</th>
-            <th>{{light.level}}</th>
-            <th>{{light.status}}</th>
+            <th><button @click="switchLight(light)" class="btn btn-light">{{light.status}}</button></th>
             <th>{{light.color}}</th>
             <th>{{light.brightness}}</th>
-            <th><button @click="switchLight(light)" class="btn btn-light">Select</button></th>
-            <th>
-                <select v-model="color_light">
+            <td>
+                <select v-model="color_light" @click="changeColor(light)">
                     <option disabled value="">Select</option>
                     <option>vert</option>
                     <option>bleu</option>
                     <option>jaune</option>
                     <option>rouge</option>
                 </select>
-            </th>
-            <th><button @click="switchColor(light)" class="btn btn-light">Change color</button></th>
+            </td>
             <th>
                 <div class="slidecontainer">
                     <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
@@ -98,10 +92,12 @@
         </tr>
         </tbody>
     </table>
+    <hr/>
+    <h2>Create a building</h2>
+    <input v-model="building_name" placeholder="Enter a building name"></input>
+    <button @click="createBuilding()" class="btn btn-light">create</button>
 
-    <button @click="subscribe" class="btn btn-light">Subscribe</button>
 
-    <p>{{color_test}}</p>
 </div>
 
 <script src="https://unpkg.com/vue"></script>
@@ -125,10 +121,9 @@ var building_vue = new Vue({
     alllights: [],
     roomsFromBuilding: [],
     lightsFromRoom: [],
-    message: 'Hello Vue.js!',
+    building_name: '',
     put_response: [],
-    color_light: "vert",
-    color_test: "test"
+    color_light: "vert"
   },
   created(){
   	let get_buildings_url = url + "/buildings";
@@ -146,63 +141,11 @@ var building_vue = new Vue({
     .then(response => response.json())
     .then(json => {this.alllights = json
     });
-  },
-  methods: {
-  getRoomsFromBuilding: function(building){
-  	this.roomsFromBuilding = [];
-  	for (var i in this.allrooms){
-    	if (this.allrooms[i]["buildingId"] == building.id){
-    		this.roomsFromBuilding.push(this.allrooms[i]);
-    	}
-    };
-  },
-  getLightsFromRoom: function(room){
-    this.lightsFromRoom = [];
-    for (var j in this.alllights){
-        if (this.alllights[j]["roomId"] == room.id){
-            this.lightsFromRoom.push(this.alllights[j]);
-        }
-    }
-  },
-  switchLight: function(light){
-    var get_url = url + "/lights";
-    var put_url = get_url + "/" + light.id + "/switch" ;
-    axios.put(put_url)
-        .then(response => { this.put_response[0] = response.data["id"];
-                                          this.put_response[1] = response.data["status"];
-        })
-        .then(put_response => {
-            for (var j in this.lightsFromRoom){
-                if (this.lightsFromRoom[j]["id"] == this.put_response[0]){
-                    this.lightsFromRoom[j]["status"] = this.put_response[1];
-                }
-            }
-        });
-  },
-
-   switchColor: function(light){
-    var color_url = url + "/lights/" + light.id + "/switchcolor/" + this.color_light ;
 
 
-
-    axios.put(color_url)
-        .then(response => { this.put_response[0] = response.data["id"];
-                                          this.put_response[1] = response.data["color"];
-        })
-        .then(put_response => {
-            for (var j in this.lightsFromRoom){
-                if (this.lightsFromRoom[j]["id"] == this.put_response[0]){
-                    this.lightsFromRoom[j]["color"] = this.put_response[1];
-                }
-            }
-        });
-  },
-
-
-subscribe: function () {
-          cloudmqtt = mqtt.connect("wss://zvafqgcd:HgxcwISOxy_z@m21.cloudmqtt.com:36964");
+    cloudmqtt = mqtt.connect("wss://zvafqgcd:HgxcwISOxy_z@m21.cloudmqtt.com:36964");
           cloudmqtt.subscribe("#");
-          console.log("connected and subsribed");
+          console.log("connected and subscribed");
 
 
 
@@ -221,24 +164,39 @@ subscribe: function () {
 
                     var parsedMsg = msg.toString().split(' ');
 
-                    var lightId = parsedMsg[2];
-                    var roomId = parsedMsg[1];
-                    var buildingId = parsedMsg[0];
-                    var order = parsedMsg[5];
-                    var value = parsedMsg[4];
+                    var lightId = parsedMsg[0];
+                    var order = parsedMsg[1];
+                    var value = parsedMsg[2];
 
                     for (var j in building_vue.alllights){
     		                        if ( building_vue.alllights[j]["id"] == lightId){
                                         console.log("light ok");
-                                        if(parsedMsg[3] == "changeColor"){
-                                            console.log("change color");
-                                            building_vue.alllights[j]["color"] = value;
+
+                                        // ici on determine quelle action on veut realiser
+                                        if(order == "changeColor"){
+                                            if(value == "rouge" | value == "vert" | value == "bleu" | value == "jaune"){
+                                                console.log("change color");
+                                                building_vue.alllights[j]["color"] = value;
+                                            }
+                                            else{console.log("please enter an available color");}
+
                                         }
-
-
-
-
+                                        if(order == "switch"){
+                                            if(value=="ON" | value=="OFF"){
+                                                console.log("switch");
+                                                building_vue.alllights[j]["status"] = value;
+                                            }
+                                            else{console.log("please enter ON or OFF");}
+                                        }
+                                        if(order == "changeBrightness"){
+                                            if(value>=0 && value<=1000){
+                                                console.log("change brightness");
+                                                building_vue.alllights[j]["brightness"] = value;
+                                            }
+                                            else{console.log("please enter value between 0 and 1000");}
+                                        }
     		                        }
+
     		         }
 
 
@@ -251,8 +209,40 @@ subscribe: function () {
 
 
 
+  },
+  methods: {
+  getRoomsFromBuilding: function(building){
+  	this.roomsFromBuilding = [];
+  	this.lightsFromRoom = [];
+  	for (var i in this.allrooms){
+    	if (this.allrooms[i]["buildingId"] == building.id){
+    		this.roomsFromBuilding.push(this.allrooms[i]);
+    	}
+    };
+  },
+  getLightsFromRoom: function(room){
+    this.lightsFromRoom = [];
+    for (var j in this.alllights){
+        if (this.alllights[j]["roomId"] == room.id){
+            this.lightsFromRoom.push(this.alllights[j]);
+        }
+    }
+  },
+  switchLight: function(light){
+    var get_url = url + "/lights";
+    var put_url = get_url + "/" + light.id + "/switch" ;
+    axios.put(put_url);
+  },
 
-      }
+   changeColor: function(light){
+    var color_url = url + "/lights/" + light.id + "/switchcolor/" + this.color_light ;
+    axios.put(color_url);
+  },
+  createBuilding: function(){
+    var create_building_url = url + "/buildings"
+    
+    axios.post(create_building_url,{"name": "salut"});
+  }
 
 }})
 

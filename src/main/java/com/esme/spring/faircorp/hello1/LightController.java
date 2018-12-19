@@ -23,6 +23,9 @@ public class LightController {
 
     @GetMapping // (5)
     public List<LightDto> findAll() {
+
+        this.simpleMqttClient.connecting();
+
         return lightDao.findAll()
                 .stream()
                 .map(LightDto::new)
@@ -39,7 +42,7 @@ public class LightController {
         Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);
         light.setStatus(light.getStatus() == Status.ON ? Status.OFF: Status.ON);
 
-        this.simpleMqttClient.sendMqtt(id.toString()+"/" + light.getStatus().toString() , "switch");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
+        this.simpleMqttClient.publishMqtt(id.toString()+" switch " + light.getStatus().toString() , "order");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
 
         return new LightDto(light);
     }
@@ -50,18 +53,20 @@ public class LightController {
 
         light.setColor(color);
 
-        this.simpleMqttClient.sendMqtt(id.toString() + "/" + light.getColor() , "changecolor");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
+
+
+        this.simpleMqttClient.publishMqtt(id.toString() + " changeColor " + light.getColor() , "order");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
 
         return new LightDto(light);
     }
 
-    @PutMapping(path = "/{id}/switchbrightness/{brightness}")
+    @PutMapping(path = "/{id}/changeBrightness/{brightness}")
     public LightDto switchStatus(@PathVariable Long id , @PathVariable String color, @PathVariable String brightness) {
         Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);
 
         light.setBrightness(brightness);
 
-        this.simpleMqttClient.sendMqtt(light.getBrightness() , "changebri");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
+        this.simpleMqttClient.publishMqtt(id.toString() + " changeBrightness " + light.getBrightness() , "order");    // envoyer le get light status en message MQTT à arduino , qui selon le message allume ou éteind
 
         return new LightDto(light);
     }
