@@ -83,6 +83,7 @@
             <th>Light color</th>
             <th>Light brightness</th>
             <th>Color</th>
+            <th>Change Brightness</th>
 
         </tr>   <!-- Fin de la ligne -->
 
@@ -105,6 +106,7 @@
                     <option>jaune</option>
                     <option>rouge</option>
 
+
                 </select>   <!-- Fin de la liste -->
 
             </td> <!-- Fin de la colonne -->
@@ -117,13 +119,48 @@
 
             </th>   <!-- Fin de la colonne -->
 
+
         </tr>   <!-- Fin de la ligne -->
 
         </tbody>    <!-- Fin des données du tableau -->
 
     </table>    <!-- Fin du tableau -->
 
-    <hr/>   <!-- Séparation horizontale -->
+
+    <hr/>
+    <h2>Create a room</h2>
+    <select v-model="room_buildingId">
+        <option value="" disabled selected>Select a building</option>
+        <option v-for="building in allbuildings" v-bind:value="building.id">
+            {{ building.name }}
+        </option>
+    </select>
+    <input v-model="room_name" placeholder="Enter a room name"></input>
+    <input type="number" v-model="room_floor" placeholder="Enter a floor"></input>
+    <button @click="createRoom()" class="btn btn-light">create</button>
+    <p>{{error_create_room}}</p>
+
+
+
+    <hr/>
+    <h2>Create a light</h2>
+    <select v-model="light_buildingId" @click="search_rooms_for_create_light()">
+        <option value="" disabled selected>Select a building</option>
+        <option v-for="building in allbuildings" v-bind:value="building.id">
+            {{ building.name }}
+        </option>
+    </select>
+    <select v-model="light_roomId" >
+        <option value="" disabled selected>Select a room</option>
+        <option v-for="room in roomsForCreateLight" v-bind:value="room.id">
+            {{ room.name }}
+        </option>
+    </select>
+    <button @click="createLight()" class="btn btn-light">create</button>
+    <p>{{error_create_room}}</p>
+  
+  <hr/>   <!-- Séparation horizontale -->
+
 
     <h2>Create a building</h2>  <!-- Sous-titre annonçant la possibilité de créer un building -->
     <input v-model="building_name" placeholder="Enter a building name"></input>  <!-- Demande de saisie du nom du nouveau building par l'utilisateur, l'ID sera ajouté automatiquement lors de l'introduction dans la base de données -->
@@ -145,15 +182,23 @@ var url = "http://localhost:8080/api"   // Variable contenant l'URL de l'API
 var building_vue = new Vue({    // Création d'une instance de vue appelée building_vue
 
   el: '#building',
-  data: {   // Contient l'ensemble des données qui seront réactives, c'est-à-dire qui s'actualiseront en direct sur la page
-  	allbuildings: [],   // Rassemblera l'ensemble des buildings existants
+  data: { // Contient l'ensemble des données qui seront réactives, c'est-à-dire qui s'actualiseront en direct sur la page
+  	allbuildings: [], // Rassemblera l'ensemble des buildings existants
     allrooms: [],   // Rassemblera l'ensemble des rooms existantes
-    alllights: [],  // Rassemblera l'ensemble des lights existantes
-    roomsFromBuilding: [],  // Rassemblera l'ensemble des rooms d'un building
-    lightsFromRoom: [],     // Rassemblera l'ensemble des lightss d'une room
-    building_name: '',  // Contiendra le nom d'un building
+    alllights: [],   // Rassemblera l'ensemble des lights existantes
+    roomsFromBuilding: [],   // Rassemblera l'ensemble des rooms d'un building
+    lightsFromRoom: [],  // Rassemblera l'ensemble des lightss d'une room
+    light_buildingId: '',
+    light_roomId: '',
+    roomsForCreateLight: [],
+    building_name: '',    // Contiendra le nom d'un building
+    room_name: '',
+    room_floor: '',
+    room_buildingId: '',
+    light_room: '',
     put_response: [],
-    color_light: "vert"     // Initialise la couleur d'une light
+    color_light: "vert",    // Initialise la couleur d'une light
+    error_create_room: ''
   },
   created(){    // S'exécute dès le début de l'exécution
   	let get_buildings_url = url + "/buildings";     // Obtention de l'URL pour récupérer tous les buildings
@@ -268,10 +313,46 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
     var color_url = url + "/lights/" + light.id + "/switchcolor/" + this.color_light ;  // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de couleur en précisant la nouvelle couleur
     axios.put(color_url);   // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   },
-  createBuilding: function(){   // méthode de création d'un building
-    var create_building_url = url + "/buildings"    // on stocke l'URL qui permet d'accéder à l'ensemble des buildings à l'aide d'une requête GET
+  createBuilding: function(){
+    var create_building_url = url + "/buildings"
+    var string_post = '{"name": "'+ this.building_name + '"}';
+    var json_post = JSON.parse(string_post);
     
-    axios.post(create_building_url,{"name": "salut"});   // On utilise Axios pour exécuter une requête POST utilisant l'URL précédent ainsi qu'un nom pour le building, ici salut
+    axios.post(create_building_url,json_post);
+  },
+
+  createRoom: function(){
+    var create_room_url = url +"/rooms";
+    var string_post = '{"floor": ' + this.room_floor + ', "name": "' + this.room_name + '" , "status": "ON" , "buildingId": ' + this.room_buildingId + '}';
+    var json_post = JSON.parse(string_post);
+    if(typeof(this.room_buildingId) != "undefined" ){
+        axios.post(create_room_url , json_post);
+    }
+    else{this.error_create_room = 'please select a building';}
+  },
+
+  createLight: function(){
+    var create_light_url = url + "/lights";
+    var string_post = '{"status": "OFF" , "brightness": "0", "color": "vert", "level" : 9 , "roomId": ' + this.light_roomId + '}';
+    var json_post = JSON.parse(string_post);
+    if(typeof(this.light_roomId | this.light_buildingId) != "undefined" ){
+        axios.post(create_light_url , json_post);
+    }
+    else{this.error_create_room = 'please select a building and a room';}
+
+  },
+
+
+
+  search_rooms_for_create_light: function(){
+        console.log("click ok");
+        console.log(this.light_buildingId);
+        this.roomsForCreateLight = [];
+  	    for (var i in this.allrooms){
+    	    if (this.allrooms[i]["buildingId"] == this.light_buildingId){
+    		    this.roomsForCreateLight.push(this.allrooms[i]);
+    	    }
+        };
   }
 
 }})

@@ -106,6 +106,8 @@ public class LightController {
         else {
             light.setLevel(dto.getLevel());
             light.setStatus(dto.getStatus());
+            light.setColor(dto.getColor());
+            light.setBrightness(dto.getBrightness());
             lightDao.save(light);
         }
 

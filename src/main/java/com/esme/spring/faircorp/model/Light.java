@@ -9,7 +9,8 @@ public class Light {
 
     //Déclaration des attributs de la classe Light
     @Id     // La prochaine variable est un ID qui sert de clef primaire à la base de donnée
-    @GeneratedValue(strategy= GenerationType.AUTO)  // Ajout automatique de la valeur de l'ID lors de l'insertion en base de données
+    @GeneratedValue(strategy= GenerationType.IDENTITY)  // Ajout automatique de la valeur de l'ID lors de l'insertion en base de données
+  
     private Long id;
 
     // L'annotation Column introduit chaque attribut
