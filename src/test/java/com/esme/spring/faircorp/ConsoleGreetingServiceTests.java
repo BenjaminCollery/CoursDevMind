@@ -9,14 +9,14 @@ import org.springframework.boot.test.rule.OutputCapture;
 
 public class ConsoleGreetingServiceTests {
 
-    @Rule
-    public OutputCapture outputCapture = new OutputCapture();
+    @Rule   // Permet d'ajouter un règle
+    public OutputCapture outputCapture = new OutputCapture();   // Permet de capturer les résultats des System.out et des System.err
 
-    @Test
+    @Test // Utilisation d'un Unit Test
     public void testGreeting() {
-        ConsoleGreetingService greetingService = new ConsoleGreetingService(); // (1)
-        greetingService.greet("Hello, Spring!");
-        outputCapture.expect(Matchers.startsWith("Hello, Spring!"));
+        ConsoleGreetingService greetingService = new ConsoleGreetingService();  // Déclaration d'une ConsolegreetingService
+        greetingService.greet("Hello, Spring!");    // utilisation du greetingService.greet()
+        outputCapture.expect(Matchers.startsWith("Hello, Spring!"));    // Capture et test du résultat
     }
 
 }
