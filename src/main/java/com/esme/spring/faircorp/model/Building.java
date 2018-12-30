@@ -3,28 +3,33 @@ package com.esme.spring.faircorp.model;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity // (1)
+// Déclaration de la classe Building
+
+@Entity // La classe sera persistante
 public class Building {
 
-
-    @Id// (2)
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    //Déclaration des attributs de la classe building
+    @Id     // La prochaine variable est un ID qui sert de clef primaire à la base de donnée
+    @GeneratedValue(strategy= GenerationType.IDENTITY) // Ajout automatique de la valeur de l'ID lors de l'insertion en base de données
     private Long id;
 
-    @Column(nullable=false, length=255)// (3)
+    @Column(nullable=false, length=255) // L'annotation Column introduit chaque propriété
     private String name;
 
-    @OneToMany(mappedBy="building")
+    @OneToMany(mappedBy="building") // Un building peut abriter plusieurs chambres
     private Set<Room> rooms;
 
 
+    // Constructeur vide
     public Building() {
     }
+
+    // Constructeur à partir du nom
     public Building(String name) {
         this.name = name;
     }
 
-
+    //Ensemble des getters et setters permettant de lire et de modifier l'ID et le nom du building
 
     public Long getId() {
         return this.id;

@@ -12,19 +12,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
-@RunWith(SpringRunner.class)
-@DataJpaTest
-@ComponentScan
+@RunWith(SpringRunner.class)    // Indique à JUnit de faire appel à SpringRunner pour exécuter les tests
+@DataJpaTest    // Focalise le test sur les composants JPA
+@ComponentScan  // Permet de clairement identifier un composant Spring afin qu'il soit scanné et reconnu lors du build
 
 
 public class LightDaoImplTest {
 
-    @Autowired
+    @Autowired  // L'annotation Autowired signifie que la variable déclarée est un DAO
     LightDaoCustom lightDaoCustom;
 
-    @Test
+    @Test   // Utilisation d'un Unit Test
     public void shouldFindOnLights() {
-                assertThat(lightDaoCustom.findOnLights())
+                assertThat(lightDaoCustom.findOnLights())   // Vérifie les caractéristiques du résultats de FindOnLights()
                 .hasSize(1)
                 .extracting("id", "status")
                 .containsExactly(tuple(-1L, Status.ON));

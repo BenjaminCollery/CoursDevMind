@@ -2,18 +2,22 @@ package com.esme.spring.faircorp.model;
 
 import javax.persistence.*;
 
-@Entity // (1)
+// Déclaration de la classe Light
+
+@Entity   // La classe sera persistante
 public class Light {
 
-    @Id// (2)
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    //Déclaration des attributs de la classe Light
+    @Id     // La prochaine variable est un ID qui sert de clef primaire à la base de donnée
+    @GeneratedValue(strategy= GenerationType.AUTO)  // Ajout automatique de la valeur de l'ID lors de l'insertion en base de données
     private Long id;
 
-    @Column(nullable=false)// (3)
+    // L'annotation Column introduit chaque attribut
+    @Column(nullable=false)
     private Integer level;
 
-    @Column(nullable=false)// (4)
-    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
+    @Enumerated(EnumType.STRING) // Déclare la valeur de l'attribut doit être convertie du type string de la base de données au type Status
     private Status status;
 
     @Column(nullable = false)
@@ -23,12 +27,14 @@ public class Light {
     private String brightness;
 
 
-    @ManyToOne
+    @ManyToOne // Plusieurs lights peuvent appartenir à une seule room
     private Room room;
 
+    // Constructeur vide
     public Light() {
     }
 
+    // Constructeur avec les valeurs des attributs fournies en paramètres
     public Light(Integer level, Status status,Room room, String color , String brightness) {
         this.level = level;
         this.status = status;
@@ -37,6 +43,7 @@ public class Light {
         this.brightness = brightness;
     }
 
+    // Déclaration des getters et des setters à tous les attributs des lights
     public Long getId() {
         return this.id;
     }
