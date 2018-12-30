@@ -63,6 +63,7 @@
             <th>Light color</th>
             <th>Light brightness</th>
             <th>Color</th>
+            <th>Change Brightness</th>
 
         </tr>
         </thead>
@@ -82,9 +83,9 @@
                 </select>
             </td>
             <th>
-                <div class="slidecontainer">
+
                     <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                </div>
+
             </th>
 
 
@@ -97,6 +98,37 @@
     <input v-model="building_name" placeholder="Enter a building name"></input>
     <button @click="createBuilding()" class="btn btn-light">create</button>
 
+    <hr/>
+    <h2>Create a room</h2>
+    <select v-model="room_buildingId">
+        <option value="" disabled selected>Select a building</option>
+        <option v-for="building in allbuildings" v-bind:value="building.id">
+            {{ building.name }}
+        </option>
+    </select>
+    <input v-model="room_name" placeholder="Enter a room name"></input>
+    <input type="number" v-model="room_floor" placeholder="Enter a floor"></input>
+    <button @click="createRoom()" class="btn btn-light">create</button>
+    <p>{{error_create_room}}</p>
+
+
+
+    <hr/>
+    <h2>Create a light</h2>
+    <select v-model="light_buildingId" @click="search_rooms_for_create_light()">
+        <option value="" disabled selected>Select a building</option>
+        <option v-for="building in allbuildings" v-bind:value="building.id">
+            {{ building.name }}
+        </option>
+    </select>
+    <select v-model="light_roomId" >
+        <option value="" disabled selected>Select a room</option>
+        <option v-for="room in roomsForCreateLight" v-bind:value="room.id">
+            {{ room.name }}
+        </option>
+    </select>
+    <button @click="createLight()" class="btn btn-light">create</button>
+    <p>{{error_create_room}}</p>
 
 </div>
 
@@ -121,9 +153,17 @@ var building_vue = new Vue({
     alllights: [],
     roomsFromBuilding: [],
     lightsFromRoom: [],
+    light_buildingId: '',
+    light_roomId: '',
+    roomsForCreateLight: [],
     building_name: '',
+    room_name: '',
+    room_floor: '',
+    room_buildingId: '',
+    light_room: '',
     put_response: [],
-    color_light: "vert"
+    color_light: "vert",
+    error_create_room: ''
   },
   created(){
   	let get_buildings_url = url + "/buildings";
@@ -240,8 +280,44 @@ var building_vue = new Vue({
   },
   createBuilding: function(){
     var create_building_url = url + "/buildings"
+    var string_post = '{"name": "'+ this.building_name + '"}';
+    var json_post = JSON.parse(string_post);
     
-    axios.post(create_building_url,{"name": "salut"});
+    axios.post(create_building_url,json_post);
+  },
+
+  createRoom: function(){
+    var create_room_url = url +"/rooms";
+    var string_post = '{"floor": ' + this.room_floor + ', "name": "' + this.room_name + '" , "status": "ON" , "buildingId": ' + this.room_buildingId + '}';
+    var json_post = JSON.parse(string_post);
+    if(typeof(this.room_buildingId) != "undefined" ){
+        axios.post(create_room_url , json_post);
+    }
+    else{this.error_create_room = 'please select a building';}
+  },
+
+  createLight: function(){
+    var create_light_url = url + "/lights";
+    var string_post = '{"status": "OFF" , "brightness": "0", "color": "vert", "level" : 9 , "roomId": ' + this.light_roomId + '}';
+    var json_post = JSON.parse(string_post);
+    if(typeof(this.light_roomId | this.light_buildingId) != "undefined" ){
+        axios.post(create_light_url , json_post);
+    }
+    else{this.error_create_room = 'please select a building and a room';}
+
+  },
+
+
+
+  search_rooms_for_create_light: function(){
+        console.log("click ok");
+        console.log(this.light_buildingId);
+        this.roomsForCreateLight = [];
+  	    for (var i in this.allrooms){
+    	    if (this.allrooms[i]["buildingId"] == this.light_buildingId){
+    		    this.roomsForCreateLight.push(this.allrooms[i]);
+    	    }
+        };
   }
 
 }})
