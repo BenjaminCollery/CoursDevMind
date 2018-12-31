@@ -47,8 +47,8 @@ public class LightController {
         return new LightDto(light);
     }
 
-    @PutMapping(path = "/{id}/switchcolor/{color}")
-    public LightDto switchStatus(@PathVariable Long id , @PathVariable String color) {
+    @PutMapping(path = "/{id}/changeColor/{color}")
+    public LightDto changeColor(@PathVariable Long id , @PathVariable String color) {
         Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);
 
         light.setColor(color);
@@ -61,7 +61,7 @@ public class LightController {
     }
 
     @PutMapping(path = "/{id}/changeBrightness/{brightness}")
-    public LightDto switchStatus(@PathVariable Long id , @PathVariable String color, @PathVariable String brightness) {
+    public LightDto changeBrightness(@PathVariable Long id , @PathVariable String brightness) {
         Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);
 
         light.setBrightness(brightness);
