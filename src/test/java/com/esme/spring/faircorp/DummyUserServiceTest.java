@@ -13,27 +13,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 
-@RunWith(SpringRunner.class)
+@RunWith(SpringRunner.class)    // Indique à JUnit de faire appel à SpringRunner pour exécuter les tests
 public class DummyUserServiceTest {
 
-    @Configuration // (2)
-    @ComponentScan("com.esme.spring.faircorp.hello1")
-    public static class DummmyUserServiceTestConfig{
+    @Configuration // Indique qu'une classe déclare des méthodes @Bean, qu'elle peut être traitée par le conteneur Spring pour générer des définitions de beans et des demandes de service pour ces beans lors de l'exécution
+    @ComponentScan("com.esme.spring.faircorp.hello1")   // Permet de clairement identifier un composant Spring afin qu'il soit scanné et reconnu lors du build
+    public static class DummmyUserServiceTestConfig{    // Définition d'une classe interne
     }
 
 
-    @Autowired
+    @Autowired  // L'annotation Autowired signifie que la variable déclarée est un DAO
     public DummyUserService dummyUserService;
 
 
-    @Rule
-    public OutputCapture outputCapture = new OutputCapture();
+    @Rule   // Permet d'ajouter un règle
+    public OutputCapture outputCapture = new OutputCapture();   // Permet de capturer les résultats des System.out et des System.err
 
-    @Test
+    @Test   // Utilisation d'un Unit Test
     public void testGreetingAll() {
-        dummyUserService.greetAll();
-        outputCapture.expect(Matchers.stringContainsInOrder(
-                Arrays.asList("Benjamin","Hugues")));
+        dummyUserService.greetAll();    // Utilisation de dummyUserService.greetAll()
+        outputCapture.expect(Matchers.stringContainsInOrder(Arrays.asList("Benjamin","Hugues"))); // Capture et test du résultat
     }
 
 }

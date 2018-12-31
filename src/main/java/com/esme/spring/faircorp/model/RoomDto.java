@@ -1,20 +1,22 @@
 package com.esme.spring.faircorp.model;
 
+/*
+Création d'un objet de transfert de données pour la classe Building
+ */
 public class RoomDto {
 
+    // Déclaration des attributs d'une room
     private Long id;
     private String name;
     private Integer floor;
     private Long buildingId;
     private Status status;
 
+    // Constructeur vide
     public RoomDto(){
-
     }
 
-
-
-
+    // Constructeur du Dto d'une room fournie en paramètres
     public RoomDto(Room room){
         this.id = room.getId();
         this.name = room.getName();
@@ -23,12 +25,12 @@ public class RoomDto {
         this.status = room.getStatus();
     }
 
+    // Définition des getters du dto
     public Long getId(){return id;}
 
     public String getName(){return name;}
 
     public Integer getFloor(){return floor;}
-
 
     public Status getStatus(){ return status;}
 
