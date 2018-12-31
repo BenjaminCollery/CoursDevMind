@@ -1,3 +1,4 @@
+
 /*
 Configuration initiale de la base de données afin de mener des tests
  */
@@ -6,9 +7,10 @@ Configuration initiale de la base de données afin de mener des tests
 Insertion de quatre buildings
  */
 INSERT INTO BUILDING(ID, NAME) VALUES(1,'Mines');
+
 INSERT INTO BUILDING(ID, NAME) VALUES(2,'EF');
 INSERT INTO BUILDING(ID, NAME) VALUES(3,'ME');
-INSERT INTO BUILDING(ID, NAME) VALUES(4,'KEBAB');
+INSERT INTO BUILDING(ID, NAME) VALUES(1,'158');
 
 /*
 Insertion de 2 rooms dans le building 1, 1 room dans le building 2 et 1 room dans le building 3

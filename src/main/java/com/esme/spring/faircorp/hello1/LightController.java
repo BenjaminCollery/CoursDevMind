@@ -52,10 +52,11 @@ public class LightController {
         return new LightDto(light);     // Renvoi de la light modifiée
     }
 
-    @PutMapping(path = "/{id}/switchcolor/{color}")     // La méthode suivante répond à une requête de type PUT lorsqu'on lui précise l'ID d'une light et l'action à effectuer
-    public LightDto switchStatus(@PathVariable Long id , @PathVariable String color) {  // Méthode qui permet de modifier la couleur d'une light
+    @PutMapping(path = "/{id}/changeColor/{color}")     // La méthode suivante répond à une requête de type PUT lorsqu'on lui précise l'ID d'une light et l'action à effectuer
+    public LightDto changeColor(@PathVariable Long id , @PathVariable String color) {  // Méthode qui permet de modifier la couleur d'une light
 
         Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);     // On sélectionne la light désignée par l'ID ou on renvoie une erreur si l'ID ne désigne rien
+
 
         light.setColor(color);  // On modifie la couleur de la light en focntion de l'argument
 
@@ -66,10 +67,12 @@ public class LightController {
         return new LightDto(light);     // Renvoi de la light modifiée
     }
 
+
     @PutMapping(path = "/{id}/changeBrightness/{brightness}")   // La méthode suivante répond à une requête de type PUT lorsqu'on lui précise l'ID d'une light et l'action à effectuer
-    public LightDto switchStatus(@PathVariable Long id , @PathVariable String color, @PathVariable String brightness) {     // Méthode qui permet de modifier la brightness d'une light
+    public LightDto changeBrightness(@PathVariable Long id , @PathVariable String brightness) {     // Méthode qui permet de modifier la brightness d'une light
 
         Light light = lightDao.findById(id).orElseThrow(IllegalArgumentException::new);     // On sélectionne la light désignée par l'ID ou on renvoie une erreur si l'ID ne désigne rien
+
 
         light.setBrightness(brightness);    // On ajuste la valeur de la brightness de la light en fonction de l'argument
 
