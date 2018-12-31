@@ -1,4 +1,4 @@
-<html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <title> Spring in practice </title>     <!-- Titre du document html -->
 </head>
@@ -127,37 +127,46 @@
     </table>    <!-- Fin du tableau -->
 
 
-    <hr/>
-    <h2>Create a room</h2>
-    <select v-model="room_buildingId">
-        <option value="" disabled selected>Select a building</option>
-        <option v-for="building in allbuildings" v-bind:value="building.id">
-            {{ building.name }}
-        </option>
-    </select>
-    <input v-model="room_name" placeholder="Enter a room name"></input>
-    <input type="number" v-model="room_floor" placeholder="Enter a floor"></input>
-    <button @click="createRoom()" class="btn btn-light">create</button>
-    <p>{{error_create_room}}</p>
+    <hr/>   <!-- Séparation horizontale -->
+
+    <h2>Create a room</h2>  <!-- Sous-titre annonçant la possibilité de créer une room -->
+    <select v-model="room_buildingId">  <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir le building dans lequel on va créer la nouvelle room parmi les buildings disponibles -->
+        <option value="" disabled selected>Select a building</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les buildings disponibles -->
+        <option v-for="building in allbuildings" v-bind:value="building.id">    <!-- On parcourt l'ensemble des buildings de allbuildings -->
+            {{ building.name }}     <!-- Pour chaque building, on affiche son nom dan sle menu déroulant -->
+
+        </option> <!-- Fin des options du menu déroulant -->
+
+    </select>   <!-- Fin du meu déroulant -->
+    <input v-model="room_name" placeholder="Enter a room name"></input>     <!-- On demande à l'utilisateur de saisir le nom de la nouvelle room, l'ID sera ajouté automatiquement lors de l'introduction dans la base de données -->
+    <input type="number" v-model="room_floor" placeholder="Enter a floor"></input>  <!-- On demande à l'utilisateur de saisir l'étage de la nouvelle room -->
+    <button @click="createRoom()" class="btn btn-light">create</button>     <!-- Bouton qui déclenche la création de la room et l'ajout en base -->
+    <p>{{error_create_room}}</p>    <!-- Appel une fonction si une erreur survient lors de la création -->
 
 
 
-    <hr/>
-    <h2>Create a light</h2>
-    <select v-model="light_buildingId" @click="search_rooms_for_create_light()">
-        <option value="" disabled selected>Select a building</option>
-        <option v-for="building in allbuildings" v-bind:value="building.id">
-            {{ building.name }}
-        </option>
-    </select>
-    <select v-model="light_roomId" >
-        <option value="" disabled selected>Select a room</option>
-        <option v-for="room in roomsForCreateLight" v-bind:value="room.id">
-            {{ room.name }}
-        </option>
-    </select>
-    <button @click="createLight()" class="btn btn-light">create</button>
-    <p>{{error_create_room}}</p>
+    <hr/>   <!-- Séparation horizontale -->
+
+    <h2>Create a light</h2>     <!-- Sous-titre annonçant la possibilité de créer une light -->
+    <select v-model="light_buildingId" @click="search_rooms_for_create_light()">    <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir l'ID du building dans lequel on va créer la nouvelle light parmi les buildings disponibles -->
+        <option value="" disabled selected>Select a building</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les buildings disponibles -->
+        <option v-for="building in allbuildings" v-bind:value="building.id">    <!-- On parcourt l'ensemble des buildings de allbuildings -->
+            {{ building.name }}     <!-- Pour chaque building, on affiche son nom dan sle menu déroulant -->
+
+        </option> <!-- Fin des options du menu déroulant -->
+
+    </select>   <!-- Fin du meu déroulant -->
+
+    <select v-model="light_roomId" >    <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir l'ID de la room dans laquelle on va créer la nouvelle light parmi les rooms disponibles -->
+        <option value="" disabled selected>Select a room</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les rooms disponibles -->
+        <option v-for="room in roomsForCreateLight" v-bind:value="room.id">     <!-- On parcourt toutes les rooms du building -->
+            {{ room.name }}     <!-- Pour chacun des rooms, on affiche son nom dans le menu déroulant -->
+
+        </option> <!-- Fin des options du menu déroulant -->
+
+    </select>   <!-- Fin du meu déroulant -->
+    <button @click="createLight()" class="btn btn-light">create</button>    <!-- Bouton qui déclenche la création de la light et l'ajout en base -->
+    <p>{{error_create_room}}</p>    <!-- Appel une fonction si une erreur survient lors de la création -->
   
   <hr/>   <!-- Séparation horizontale -->
 
@@ -187,18 +196,18 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
     allrooms: [],   // Rassemblera l'ensemble des rooms existantes
     alllights: [],   // Rassemblera l'ensemble des lights existantes
     roomsFromBuilding: [],   // Rassemblera l'ensemble des rooms d'un building
-    lightsFromRoom: [],  // Rassemblera l'ensemble des lightss d'une room
-    light_buildingId: '',
-    light_roomId: '',
-    roomsForCreateLight: [],
+    lightsFromRoom: [],  // Rassemblera l'ensemble des lights d'une room
+    light_buildingId: '',   // Contient l'ID du building auquel appartient la light
+    light_roomId: '',   // Contient l'ID de la room à laquelle appartient la light
+    roomsForCreateLight: [],    // Contient les rooms du building dans lesquelles on peut créer une lignt
     building_name: '',    // Contiendra le nom d'un building
-    room_name: '',
-    room_floor: '',
-    room_buildingId: '',
+    room_name: '',  // Contient le nom de la room
+    room_floor: '',     // Contient l'étage de la room
+    room_buildingId: '',    // Contient ll'ID du building auquel appartient la room
     light_room: '',
     put_response: [],
     color_light: "vert",    // Initialise la couleur d'une light
-    error_create_room: ''
+    error_create_room: ''   // Contient le message d'erreur
   },
   created(){    // S'exécute dès le début de l'exécution
   	let get_buildings_url = url + "/buildings";     // Obtention de l'URL pour récupérer tous les buildings
@@ -313,44 +322,42 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
     var color_url = url + "/lights/" + light.id + "/switchcolor/" + this.color_light ;  // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de couleur en précisant la nouvelle couleur
     axios.put(color_url);   // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   },
-  createBuilding: function(){
-    var create_building_url = url + "/buildings"
-    var string_post = '{"name": "'+ this.building_name + '"}';
-    var json_post = JSON.parse(string_post);
+  createBuilding: function(){   // Méthode pour créer un building
+    var create_building_url = url + "/buildings"    // On stocke l'URL qui permet de récupérer l'ensemble des buildings existants à l'aide d'une requête GET
+    var string_post = '{"name": "'+ this.building_name + '"}';  // On crée le fichier JSON contenant le nom du building
+    var json_post = JSON.parse(string_post);    // On convertit le fichier JSON précédemment créé en objet javascript
     
-    axios.post(create_building_url,json_post);
+    axios.post(create_building_url,json_post);  // On utilise Axios afin de former une requête POST vers la base de données et de créer le building
   },
 
-  createRoom: function(){
-    var create_room_url = url +"/rooms";
-    var string_post = '{"floor": ' + this.room_floor + ', "name": "' + this.room_name + '" , "status": "ON" , "buildingId": ' + this.room_buildingId + '}';
-    var json_post = JSON.parse(string_post);
-    if(typeof(this.room_buildingId) != "undefined" ){
-        axios.post(create_room_url , json_post);
+  createRoom: function(){   // Méthode pour créer une room
+    var create_room_url = url +"/rooms";    // On stocke l'URL qui permet de récupérer l'ensemble des rooms existantes à l'aide d'une requête GET
+    var string_post = '{"floor": ' + this.room_floor + ', "name": "' + this.room_name + '" , "status": "ON" , "buildingId": ' + this.room_buildingId + '}';    // On crée le fichier JSON contenant les attributs de la nouvelle room
+    var json_post = JSON.parse(string_post);    // On convertit le fichier JSON précédemment créé en objet javascript
+    if(typeof(this.room_buildingId) != "undefined" ){   // On vérifie que l'utilisateur a bien sélectionné un building dans lequel créer la room
+        axios.post(create_room_url , json_post);    // On utilise Axios afin de former une requête POST et de créer la room
     }
-    else{this.error_create_room = 'please select a building';}
+    else{this.error_create_room = 'please select a building';}  // Si une erreur survient, on complète le message d'avertissement pour l'utilisateur
   },
 
-  createLight: function(){
-    var create_light_url = url + "/lights";
-    var string_post = '{"status": "OFF" , "brightness": "0", "color": "vert", "level" : 9 , "roomId": ' + this.light_roomId + '}';
-    var json_post = JSON.parse(string_post);
-    if(typeof(this.light_roomId | this.light_buildingId) != "undefined" ){
-        axios.post(create_light_url , json_post);
+  createLight: function(){  // Méthode pour créer une light
+    var create_light_url = url + "/lights";     // On stocke l'URL qui permet de récupérer l'ensemble des lights existantes à l'aide d'une requête GET
+    var string_post = '{"status": "OFF" , "brightness": "0", "color": "vert", "level" : 9 , "roomId": ' + this.light_roomId + '}';  // On crée le fichier JSON contenant les attributs de la nouvelle light
+    var json_post = JSON.parse(string_post);    // On convertit le fichier JSON précédemment créé en objet javascript
+    if(typeof(this.light_roomId | this.light_buildingId) != "undefined" ){  // On vérifie que l'utilisateur a bien sélectionné un building et une room dans lesquels créer la light
+        axios.post(create_light_url , json_post);   // On utilise Axios afin de former une requête POST et de créer la light
     }
-    else{this.error_create_room = 'please select a building and a room';}
+    else{this.error_create_room = 'please select a building and a room';}   // Si une erreur survient, on complète le message d'avertissement pour l'utilisateur
 
   },
 
-
-
-  search_rooms_for_create_light: function(){
-        console.log("click ok");
-        console.log(this.light_buildingId);
-        this.roomsForCreateLight = [];
-  	    for (var i in this.allrooms){
-    	    if (this.allrooms[i]["buildingId"] == this.light_buildingId){
-    		    this.roomsForCreateLight.push(this.allrooms[i]);
+  search_rooms_for_create_light: function(){    // Méthode de recherche des rooms d'un building
+        console.log("click ok");    // On demande à l'utilisateur de cliquer sur ok
+        console.log(this.light_buildingId);     // On affiche l'ID du building sélectionné dans lequel l'utilisateur veut créer une light
+        this.roomsForCreateLight = [];  // Remise à zéro de la liste contenant les rooms d'un précédent building
+  	    for (var i in this.allrooms){   // On parcourt toutes les rooms de allrooms
+    	    if (this.allrooms[i]["buildingId"] == this.light_buildingId){   // Pour chaque room, on vérifie l'ID du building auquel elle appartient
+    		    this.roomsForCreateLight.push(this.allrooms[i]);    // Si cet ID est égal à celui du building qui nous intéresse, on ajoute cette room à la liste des rooms du building sélectionné
     	    }
         };
   }

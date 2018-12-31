@@ -8,6 +8,6 @@ public class ConsoleGreetingService implements GreetingService {
 
     public void greet(String s){    // Méthode qui permet l'affichage de la chaîne de caractères s
         System.out.println(s);
-    }
+    } // Permet d'afficher la chaîne de caractères s
 
 }
