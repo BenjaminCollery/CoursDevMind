@@ -1,6 +1,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+
     <title> Spring in practice </title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
@@ -12,6 +13,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+
+<div id="building">     <!-- Crée le bloc building -->
+    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables1" style="color: black;"> <!-- Crée un tableau avec des zébras,un fond gris, un effet compacté et des contours dont le nom du tableau est spécifié dans l'ID (utile au CSS) et la couleur d'écriture est noire -->
+        <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
+        <tr>    <!-- Nouvelle ligne -->
 
 
 <div id="building">
@@ -34,47 +40,69 @@
     <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables1" style="color: black;">
         <thead>
         <tr>
+
+            <!-- La balise th permet d'indiquer que ce qu'elle contient sera le nom d'une colonne -->
+
             <th>Building ID</th>
             <th>Building Name</th>
             <th>Select building</th>
 
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="building in allbuildings">
-            <th>{{building.id}}</th>
-            <th>{{building.name}}</th>
-            <th><button @click="getRoomsFromBuilding(building)" class="btn btn-light">Select</button></th>
+        </tr>   <!-- Fin de la ligne -->
 
-        </tr>
-        </tbody>
-    </table>
-    <hr/>
-    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables2" style="color: black;">
-        <thead>
-        <tr>
+        </thead>    <!-- Fin de l'en-tête -->
+
+        <tbody>     <!-- Contient les données du tableau -->
+        <tr v-for="building in allbuildings">   <!-- Nouvelle ligne créée pour chaque building existant dans allbuildings -->
+
+            <th>{{building.id}}</th>    <!-- Colonne contenant l'ID du building -->
+            <th>{{building.name}}</th>  <!-- Colonne contenant le nom du building -->
+            <th><button @click="getRoomsFromBuilding(building)" class="btn btn-light">Select</button></th>  <!-- Bouton Select permettant d'accéder aux rooms du building au travers d'une requête GET -->
+
+        </tr>   <!-- Fin de la ligne -->
+
+        </tbody>    <!-- Fin des données du tableau -->
+
+    </table>    <!-- Fin du tableau -->
+
+    <hr/>   <!-- Séparation horizontale -->
+
+    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables2" style="color: black;">   <!-- Crée un tableau avec des zébras,un fond gris, un effet compacté et des contours dont le nom du tableau est spécifié dans l'ID (utile au CSS) et la couleur d'écriture est noire -->
+        <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
+        <tr>    <!-- Nouvelle ligne -->
+
+            <!-- La balise th permet d'indiquer que ce qu'elle contient sera le nom d'une colonne -->
             <th>Room ID</th>
             <th>Room Name</th>
             <th>Room Floor</th>
             <th>Room Status</th>
             <th>Select room</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="room in roomsFromBuilding">
-            <th>{{room.id}}</th>
-            <th>{{room.name}}</th>
-            <th>{{room.floor}}</th>
-            <th>{{room.status}}</th>
-            <th><button @click="getLightsFromRoom(room)" class="btn btn-light">Select</button></th>
 
-        </tr>
-        </tbody>
-    </table>
+        </tr>   <!-- Fin de la ligne -->
 
-    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables3" style="color: black;">
-        <thead>
-        <tr>
+        </thead>    <!-- Fin de l'en-tête -->
+
+        <tbody>     <!-- Contient les données du tableau -->
+        <tr v-for="room in roomsFromBuilding">  <!-- Nouvelle ligne créée pour chaque room existant dans roomsFromBuilding -->
+
+            <th>{{room.id}}</th>    <!-- Colonne contenant l'ID de la room -->
+            <th>{{room.name}}</th>  <!-- Colonne contenant le nom de la room -->
+            <th>{{room.floor}}</th>     <!-- Colonne contenant l'étage de la room -->
+            <th>{{room.status}}</th>    <!-- Colonne contenant le statut de la room -->
+            <th><button @click="getLightsFromRoom(room)" class="btn btn-light">Select</button></th>     <!-- Bouton Select permettant d'accéder aux lights de la room au travers d'une requête GET -->
+
+        </tr>   <!-- Fin de la ligne -->
+
+        </tbody>    <!-- Fin des données du tableau -->
+
+    </table>    <!-- Fin du tableau -->
+
+    <hr/>   <!-- Séparation horizontale -->
+
+    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables3" style="color: black;">   <!-- Crée un tableau avec des zébras,un fond gris, un effet compacté et des contours dont le nom du tableau est spécifié dans l'ID (utile au CSS) et la couleur d'écriture est noire -->
+        <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
+        <tr>    <!-- Nouvelle ligne -->
+
+            <!-- La balise th permet d'indiquer que ce qu'elle contient sera le nom d'une colonne -->
             <th>Light ID</th>
             <th>Light Status</th>
             <th>Light color</th>
@@ -82,25 +110,28 @@
             <th>Color</th>
             <th>Change Brightness</th>
 
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="light in lightsFromRoom">
-            <th>{{light.id}}</th>
-            <th><button @click="switchLight(light)" class="btn btn-light">{{light.status}}</button></th>
-            <th>{{light.color}}</th>
-            <th>{{light.brightness}}</th>
-            <td>
-                <select v-model="color_light" @click="changeColor(light)">
-                    <option disabled value="">Select</option>
+        </tr>   <!-- Fin de la ligne -->
+
+        </thead>    <!-- Fin de l'en-tête -->
+
+        <tbody>     <!-- Contient les données du tableau -->
+        <tr v-for="light in lightsFromRoom">    <!-- Nouvelle ligne créée pour chaque light existant dans lightsFromRoom -->
+
+            <th>{{light.id}}</th>   <!-- Colonne contenant l'ID de la light -->
+            <th><button @click="switchLight(light)" class="btn btn-light">{{light.status}}</button></th>    <!-- Colonne contenant le bouton permettant d'éteindre et d'allumer la light -->
+            <th>{{light.color}}</th>    <!-- Colonne contenant la couleur de la light -->
+            <th>{{light.brightness}}</th>   <!-- Colonne contenant l'intensité lumineuse de la light -->
+
+            <td> <!-- Colonne contenant le bouton permettant de changer la couleur de la light -->
+                <select v-model="color_light" @click="changeColor(light)"> <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir la couleur de la light parmi les couleurs disponibles puis de l'appliquer lors du clic sur la couleur souhaitée -->
+                    <option disabled value="">Select</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les couleurs disponibles -->
+                    <!-- Liste des couleurs disponibles -->
                     <option>vert</option>
                     <option>bleu</option>
                     <option>jaune</option>
                     <option>rouge</option>
-                </select>
-            </td>
-            <th>
 
+   <!-- Permet de créer le curseur gérant l'intensité lumineuse en entrant le type de curseur, sa valeur minimale, sa valeur maximale, sa valeur par défaut et son nom -->
                     <input v-model="bri" type="range" min="1" max="100" value="50" class="slider" id="myRange" @input="changeBrightness(light)">
 
             </th>
@@ -110,96 +141,97 @@
 </div>
 
 
-<script>
 
+<script>    // Début du script Vuejs
 
 
 var url = "https://faircorp-benjamin.cleverapps.io/api"
 
-var building_vue = new Vue({
+
+var building_vue = new Vue({    // Création d'une instance de vue appelée building_vue
 
   el: '#building',
-  data: {
-  	allbuildings: [],
-    allrooms: [],
-    alllights: [],
-    roomsFromBuilding: [],
-    lightsFromRoom: [],
+  data: { // Contient l'ensemble des données qui seront réactives, c'est-à-dire qui s'actualiseront en direct sur la page
+  	allbuildings: [], // Rassemblera l'ensemble des buildings existants
+    allrooms: [],   // Rassemblera l'ensemble des rooms existantes
+    alllights: [],   // Rassemblera l'ensemble des lights existantes
+    roomsFromBuilding: [],   // Rassemblera l'ensemble des rooms d'un building
+    lightsFromRoom: [],  // Rassemblera l'ensemble des lightss d'une room
+    building_name: '',    // Contiendra le nom d'un building
     light_room: '',
     put_response: [],
-    color_light: "vert",
-    error_create_room: '',
-    bri: 50
+    color_light: "vert"    // Initialise la couleur d'une light
+
   },
-  created(){
-  	let get_buildings_url = url + "/buildings";
-   	fetch(get_buildings_url)
-    .then(response => response.json())
-    .then(json => {this.allbuildings = json
+  created(){    // S'exécute dès le début de l'exécution
+  	let get_buildings_url = url + "/buildings";     // Obtention de l'URL pour récupérer tous les buildings
+   	fetch(get_buildings_url)    // Permet d'aller chercher les données grâce à l'URL et à une requête GET
+    .then(response => response.json())  // Récupération du JSON, issu de la requête GET, contenant ces données
+    .then(json => {this.allbuildings = json     // Conversion puis stockage des données contenues dans le JSON dans la variable allbuildings
     });
-    let get_rooms_url = url + "/rooms";
-   	fetch(get_rooms_url)
-    .then(response => response.json())
-    .then(json => {this.allrooms = json
+    let get_rooms_url = url + "/rooms";     // Obtention de l'URL pour récupérer toutes les rooms
+   	fetch(get_rooms_url)    // Permet d'aller chercher les données grâce à l'URL et à une requête GET
+    .then(response => response.json())  // Récupération du JSON, issu de la requête GET, contenant ces données
+    .then(json => {this.allrooms = json     // Conversion puis stockage des données contenues dans le JSON dans la variable allrooms
     });
-    let get_lights_url = url + "/lights";
-   	fetch(get_lights_url)
-    .then(response => response.json())
-    .then(json => {this.alllights = json
+    let get_lights_url = url + "/lights";   // Obtention de l'URL pour récupérer toutes les lights
+   	fetch(get_lights_url)   // Permet d'aller chercher les données grâce à l'URL et à une requête GET
+    .then(response => response.json())  // Récupération du JSON, issu de la requête GET, contenant ces données
+    .then(json => {this.alllights = json    // Conversion puis stockage des données contenues dans le JSON dans la variable alllights
     });
 
 
-    cloudmqtt = mqtt.connect("wss://zvafqgcd:HgxcwISOxy_z@m21.cloudmqtt.com:36964");
-          cloudmqtt.subscribe("#");
-          console.log("connected and subscribed");
+    cloudmqtt = mqtt.connect("wss://zvafqgcd:HgxcwISOxy_z@m21.cloudmqtt.com:36964");    // Connection au cloud MQTT en fournissant l'identifiant, le mot de passe, l'adresse et le port de connection
+          cloudmqtt.subscribe("#");     // On souscrit à tous les canaux pour tous les écouter
+          console.log("connected and subscribed");  // On confirme à l'utilisateur qu'on est connecté et que l'écoute a débuté
 
 
 
 
-           cloudmqtt.on("message", function (topic, payload) {
-              console.log("message received from cloudMqtt: " , topic , new TextDecoder("utf-8").decode(payload));
-              msg = new TextDecoder("utf-8").decode(payload);
-              console.log(msg);
+           cloudmqtt.on("message", function (topic, payload) {  // Lors de la réception d'un message payload de la part de topic
+              console.log("message received from cloudMqtt: " , topic , new TextDecoder("utf-8").decode(payload));  // On prévient l'utilisateur de la réception du message et on affiche l'auteur
+              msg = new TextDecoder("utf-8").decode(payload);   // On stocke le message reçu
+              console.log(msg);     // Puis on affiche le message
               this.color_test = msg.toString();
               this.color_test = " salut ";
 
 
 
 
-              if (topic == "order"){
+              if (topic == "order"){    // Si le message provient de order
 
-                    var parsedMsg = msg.toString().split(' ');
+                    var parsedMsg = msg.toString().split(' ');  // On convertit le message reçu en string puis on le sépare en plusieurs parties séparées par des espaces, dans notre cas il y a 3 parties (light action valeur)
 
-                    var lightId = parsedMsg[0];
-                    var order = parsedMsg[1];
-                    var value = parsedMsg[2];
+                    var lightId = parsedMsg[0];     // On récupère l'ID de la lampe concernée par le message
+                    var order = parsedMsg[1];   // On récupère le type d'action désirée (changer la couleur, le statut, l'intensité lumineuse)
+                    var value = parsedMsg[2];   // on récupère la nouvelle valeur
 
-                    for (var j in building_vue.alllights){
-    		                        if ( building_vue.alllights[j]["id"] == lightId){
-                                        console.log("light ok");
+                    for (var j in building_vue.alllights){  // On parcourt toutes les lights existantes
+    		                        if ( building_vue.alllights[j]["id"] == lightId){   // Si on trouve une light pour laquelle l'ID correspond
+                                        console.log("light ok");    // On prévient l'utilisateur que la light existe
 
                                         // ici on determine quelle action on veut realiser
-                                        if(order == "changeColor"){
-                                            if(value == "rouge" | value == "vert" | value == "bleu" | value == "jaune"){
-                                                console.log("change color");
-                                                building_vue.alllights[j]["color"] = value;
+                                        if(order == "changeColor"){     // Si on souhaite changer la couleur
+                                            if(value == "rouge" | value == "vert" | value == "bleu" | value == "jaune"){    // Si la couleur désirée est disponible
+                                                console.log("change color");    // On prévient qu'on change la light de couleur
+                                                building_vue.alllights[j]["color"] = value;     // On applique le changement
                                             }
-                                            else{console.log("please enter an available color");}
+                                            else{console.log("please enter an available color");}   // Si la couleur n'existe pas, on prévient l'utilisateur
 
                                         }
-                                        if(order == "switch"){
-                                            if(value=="ON" | value=="OFF"){
-                                                console.log("switch");
-                                                building_vue.alllights[j]["status"] = value;
+                                        if(order == "switch"){  // Si l'on souhaite éteindre ou allumer la light
+                                            if(value=="ON" | value=="OFF"){ // On vérifie que la valeur d'entrée est bien ON ou OFF
+                                                console.log("switch");  // On prévient l'utilisateur qu'on modifie le statut de la lampe
+                                                building_vue.alllights[j]["status"] = value;    // On applique le changement
                                             }
-                                            else{console.log("please enter ON or OFF");}
+                                            else{console.log("please enter ON or OFF");}    // Si la valeur n'existe pas, on prévient l'utilisateur
                                         }
-                                        if(order == "changeBrightness"){
-                                            if(value>=0 && value<=1000){
-                                                console.log("change brightness");
-                                                building_vue.alllights[j]["brightness"] = value;
+                                        if(order == "changeBrightness"){    // Si l'on souhaite modifier l'intensité lumineuse de la light
+                                            if(value>=0 && value<=1000){    // On vérifie que la valeur est possible
+                                                console.log("change brightness");   // On prévient l'utilisateur qu'on ajuste l'intensité de la light
+                                                building_vue.alllights[j]["brightness"] = value;    // On applique le changement
                                             }
-                                            else{console.log("please enter value between 0 and 1000");}
+                                            else{console.log("please enter value between 0 and 1000");}     // Si la valeur est impossible, on prévient l'utilisateur
                                         }
     		                        }
 
@@ -209,40 +241,41 @@ var building_vue = new Vue({
 
               }
 
-              console.log(building_vue.lightsFromRoom);
+              console.log(building_vue.lightsFromRoom);     // On actualise l'affichage à l'écran en rechageant les lights de la room sélectionnée
 
            });
 
 
 
   },
-  methods: {
-  getRoomsFromBuilding: function(building){
-  	this.roomsFromBuilding = [];
-  	this.lightsFromRoom = [];
-  	for (var i in this.allrooms){
-    	if (this.allrooms[i]["buildingId"] == building.id){
-    		this.roomsFromBuilding.push(this.allrooms[i]);
+  methods: {    // Ensemble des méthodes
+  getRoomsFromBuilding: function(building){     // Obtenir les rooms d'un building donné
+  	this.roomsFromBuilding = [];    // Remise à zéro de la liste des rooms du building
+  	this.lightsFromRoom = [];   // Remise à zéro de la liste qui contiendra les lights d'une room sélectionnée
+  	for (var i in this.allrooms){   // On parcourt toutes les rooms
+    	if (this.allrooms[i]["buildingId"] == building.id){     // Si une room appartient au building sélectionné (on utilise le fait que l'ID du building d'appartenance est stocké dans les attributs des rooms)
+    		this.roomsFromBuilding.push(this.allrooms[i]);  // On ajoute cette room à la liste des rooms du building donné
     	}
     };
   },
-  getLightsFromRoom: function(room){
-    this.lightsFromRoom = [];
-    for (var j in this.alllights){
-        if (this.alllights[j]["roomId"] == room.id){
-            this.lightsFromRoom.push(this.alllights[j]);
+  getLightsFromRoom: function(room){    // Obtenir les lights d'une room donnée
+    this.lightsFromRoom = [];   // Remise à zéro de la liste qui contiendra les lights de la room donnée
+    for (var j in this.alllights){  // On parcourt toutes les lights
+        if (this.alllights[j]["roomId"] == room.id){    // Si une light appartient à la room sélectionnée (on utilise le fait que l'ID de la room d'appartenance est stocké dans les attributs des lights)
+            this.lightsFromRoom.push(this.alllights[j]);    // On ajoute cette light à la liste des lights de la room donnée
         }
     }
   },
-  switchLight: function(light){
-    var get_url = url + "/lights";
-    var put_url = get_url + "/" + light.id + "/switch" ;
-    axios.put(put_url);
+  switchLight: function(light){     // Changement du statut d'une light
+    var get_url = url + "/lights";  // On stocke l'URL qui permet de récupérer l'ensemble des lights existantes à l'aide d'une requête GET
+    var put_url = get_url + "/" + light.id + "/switch" ;    // On complète l'URL précédent pour sélectionner une light en fonction de son ID et pour modifier son statut en ajoutant à son url /switch
+    axios.put(put_url);     // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   },
 
-   changeColor: function(light){
-    var color_url = url + "/lights/" + light.id + "/changeColor/" + this.color_light ;
-    axios.put(color_url);
+
+   changeColor: function(light){    // Changement de la couleur d'une light
+    var color_url = url + "/lights/" + light.id + "/changeColor/" + this.color_light ;  // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de couleur en précisant la nouvelle couleur
+    axios.put(color_url);   // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   },
 
   changeBrightness: function(light){
@@ -252,6 +285,6 @@ var building_vue = new Vue({
 
 }})
 
-  </script>
-</body>
-</html>
+  </script>     <!-- Fin du script Vuejs -->
+</body>     <!-- Fin du contenu de la page -->
+</html>     <!-- Fin du document html -->
