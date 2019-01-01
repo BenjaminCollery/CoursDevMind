@@ -122,7 +122,7 @@
             <th>{{light.color}}</th>    <!-- Colonne contenant la couleur de la light -->
             <th>{{light.brightness}}</th>   <!-- Colonne contenant l'intensité lumineuse de la light -->
 
-            <td> <!-- Colonne contenant le bouton permettant de changer la couleur de la light -->
+            <th> <!-- Colonne contenant le bouton permettant de changer la couleur de la light -->
                 <select v-model="color_light" @click="changeColor(light)"> <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir la couleur de la light parmi les couleurs disponibles puis de l'appliquer lors du clic sur la couleur souhaitée -->
                     <option disabled value="">Select</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les couleurs disponibles -->
                     <!-- Liste des couleurs disponibles -->
@@ -131,9 +131,10 @@
                     <option>jaune</option>
                     <option>rouge</option>
 
-   <!-- Permet de créer le curseur gérant l'intensité lumineuse en entrant le type de curseur, sa valeur minimale, sa valeur maximale, sa valeur par défaut et son nom -->
-                    <input v-model="bri" type="range" min="1" max="100" value="50" class="slider" id="myRange" @input="changeBrightness(light)">
-
+            </th>
+            <th>
+                <!-- Permet de créer le curseur gérant l'intensité lumineuse en entrant le type de curseur, sa valeur minimale, sa valeur maximale, sa valeur par défaut et son nom -->
+                <input v-model="bri" type="range" min="1" max="100" value="50" class="slider" id="myRange" @input="changeBrightness(light)">
             </th>
         </tr>
         </tbody>
