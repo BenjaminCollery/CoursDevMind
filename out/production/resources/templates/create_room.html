@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+<script src="https://unpkg.com/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+
+<div id="create_room">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Philips Hue Control Platform</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="/create_building">Create Building</a></li>
+                <li><a href="/create_room">Create Room</a></li>
+                <li><a href="/create_light">Create Light</a></li>
+            </ul>
+        </div>
+    </nav>
+<h1>Create a room</h1>
+<select v-model="room_buildingId">
+    <option value="" disabled selected>Select a building</option>
+    <option v-for="building in allbuildings" v-bind:value="building.id">
+        {{ building.name }}
+    </option>
+</select>
+<input v-model="room_name" placeholder="Enter a room name"></input>
+<input type="number" v-model="room_floor" placeholder="Enter a floor"></input>
+<button @click="createRoom()" class="btn btn-light">create</button>
+<p>{{message}}</p>
+
+</div>
+<script>
+
+var url = "http://localhost:8080/api"
+
+var building_vue = new Vue({
+
+  el: '#create_room',
+  data: {
+  allbuildings: [],
+  room_name: '',
+  room_floor: '',
+  room_buildingId: '',
+  message: ''
+  },
+  created(){
+	let get_buildings_url = url + "/buildings";
+   	fetch(get_buildings_url)
+    .then(response => response.json())
+    .then(json => {this.allbuildings = json
+    });
+  },
+  methods: {
+
+  createRoom: function(){
+    var create_room_url = url +"/rooms";
+    var string_post = '{"floor": ' + this.room_floor + ', "name": "' + this.room_name + '" , "status": "ON" , "buildingId": ' + this.room_buildingId + '}';
+    var json_post = JSON.parse(string_post);
+    if(typeof(this.room_buildingId) != "undefined" ){
+        axios.post(create_room_url , json_post);
+        this.room_name = '';
+        this.message = 'the room has been added';
+    }
+    else{this.message = 'please select a building';}
+
+
+  }
+
+}})
+
+</script>
+
+
+
+</body>
+</html>
