@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @CrossOrigin     // Permet d'ouvrir l'API avec plusieurs applications différentes
-@RestController     // Annonce l'utilisation d'un service REST - ici controlleur de la classe room
+@RestController     // Annonce l'utilisation d'un service REST - controlleur
 @RequestMapping("/api/rooms")   // Permet de définir le préfixe de l'URL qui mène à notre base de données
 @Transactional      // Classe utilisée lors des transactions
 public class RoomController {

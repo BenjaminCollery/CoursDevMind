@@ -1,23 +1,49 @@
-<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
-<head>
-    <title> Spring in practice </title>     <!-- Titre du document html -->
-</head>
+
+<html xmlns:th="http://www.thymeleaf.org">  <!-- Balise obligatoire dans un fichier html -->
+<head>  <!-- En-tête -->
+    <title> Spring in practice </title>     <!-- Titre de la page -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">  <!-- Indique la relation qu'il existe entre ce document et le contenu de href -->
+</head>     <!-- Fin de l'en-tête -->
 <body>  <!-- Début du contenu de la page -->
-<h1>Plateforme de controle des lampes</h1>     <!-- Titre de la page à son ouverture -->
 
-
-
-<script src="https://unpkg.com/vue"></script>   <!-- Permet d'inclure Vue -->
+<script src="https://unpkg.com/vue"></script>    <!-- Permet d'inclure Vue -->
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>     <!-- Permet d'obetnir des avertissements utiles dans la console lors de la compilation et de l'exécution -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>   <!-- Nécessaire à l'utilisation d'Axios quui permet de se connecter à l'API -->
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    <!-- Permet au code javascript de formuler des requêtes en utilisant l'outil ajax et des fonctionnalités du framework jquery -->
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>     <!-- Permet au code javascript d'utiliser des fonctionnalités du protocole de messagerie mqtt -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>   <!-- Permet d'utiliser la bibliothèque paho pour gérer les connexions d'un client mqtt -->
 
 <div id="building">     <!-- Crée le bloc building -->
     <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables1" style="color: black;"> <!-- Crée un tableau avec des zébras,un fond gris, un effet compacté et des contours dont le nom du tableau est spécifié dans l'ID (utile au CSS) et la couleur d'écriture est noire -->
         <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
         <tr>    <!-- Nouvelle ligne -->
 
+
+<div id="building">     <!-- Crée le bloc building -->
+
+    <nav class="navbar navbar-default">     <!-- Début d'une section de navigation, bloc d'une page contenant des liens vers d'autres sections de cette page ou vers d'autres pages -->
+        <div class="container-fluid">   <!-- Crée un bloc -->
+            <div class="navbar-header">     <!-- Crée un autre bloc -->
+                <a class="navbar-brand" href="#">Philips Hue Control Platform</a>   <!-- La balise a indique que le texte qui suit est un lien hypertexte menant vers le contenu de href -->
+            </div>  <!-- Fin du bloc -->
+            <ul class="nav navbar-nav">     <!-- La balise ul permet de créer une liste d'éléments -->
+
+                <!-- La balise li indique un élément dans une liste, l'ajout de la balise a indique que cet élément est un lien hypertexterenvoyant vers le contenu de l'attribut href -->
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="/create_building">Create Building</a></li>
+                <li><a href="/create_room">Create Room</a></li>
+                <li><a href="/create_light">Create Light</a></li>
+            </ul>   <!-- Fin de la liste d'éléments -->
+        </div>  <!-- Fin du bloc -->
+    </nav>  <!-- Fin de la section de navigation -->
+
+
+    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables1" style="color: black;">   <!-- Crée un tableau avec des zébras,un fond gris, un effet compacté et des contours dont le nom du tableau est spécifié dans l'ID (utile au CSS) et la couleur d'écriture est noire -->
+        <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
+        <tr>    <!-- Nouvelle ligne -->
+
             <!-- La balise th permet d'indiquer que ce qu'elle contient sera le nom d'une colonne -->
+
             <th>Building ID</th>
             <th>Building Name</th>
             <th>Select building</th>
@@ -29,9 +55,10 @@
         <tbody>     <!-- Contient les données du tableau -->
         <tr v-for="building in allbuildings">   <!-- Nouvelle ligne créée pour chaque building existant dans allbuildings -->
 
-            <th>{{building.id}}</th>    <!-- Colonne contenant l'ID du building -->
-            <th>{{building.name}}</th>  <!-- Colonne contenant le nom du building -->
-            <th><button @click="getRoomsFromBuilding(building)" class="btn btn-light">Select</button></th>  <!-- Bouton Select permettant d'accéder aux rooms du building au travers d'une requête GET -->
+            <!-- La balise td permet de signaler l'élément d'une colonne -->
+            <td>{{building.id}}</td>    <!-- Colonne contenant l'ID du building -->
+            <td>{{building.name}}</td>  <!-- Colonne contenant le nom du building -->
+            <td><button @click="getRoomsFromBuilding(building)" class="btn btn-light">Select</button></td>  <!-- Bouton Select permettant d'accéder aux rooms du building au travers d'une requête GET -->
 
         </tr>   <!-- Fin de la ligne -->
 
@@ -59,11 +86,12 @@
         <tbody>     <!-- Contient les données du tableau -->
         <tr v-for="room in roomsFromBuilding">  <!-- Nouvelle ligne créée pour chaque room existant dans roomsFromBuilding -->
 
-            <th>{{room.id}}</th>    <!-- Colonne contenant l'ID de la room -->
-            <th>{{room.name}}</th>  <!-- Colonne contenant le nom de la room -->
-            <th>{{room.floor}}</th>     <!-- Colonne contenant l'étage de la room -->
-            <th>{{room.status}}</th>    <!-- Colonne contenant le statut de la room -->
-            <th><button @click="getLightsFromRoom(room)" class="btn btn-light">Select</button></th>     <!-- Bouton Select permettant d'accéder aux lights de la room au travers d'une requête GET -->
+            <!-- La balise td permet de signaler l'élément d'une colonne -->
+            <td>{{room.id}}</td>    <!-- Colonne contenant l'ID de la room -->
+            <td>{{room.name}}</td>  <!-- Colonne contenant le nom de la room -->
+            <td>{{room.floor}}</td>     <!-- Colonne contenant l'étage de la room -->
+            <td>{{room.status}}</td>    <!-- Colonne contenant le statut de la room -->
+            <td><button @click="getLightsFromRoom(room)" class="btn btn-light">Select</button></td>     <!-- Bouton Select permettant d'accéder aux lights de la room au travers d'une requête GET -->
 
         </tr>   <!-- Fin de la ligne -->
 
@@ -92,10 +120,11 @@
         <tbody>     <!-- Contient les données du tableau -->
         <tr v-for="light in lightsFromRoom">    <!-- Nouvelle ligne créée pour chaque light existant dans lightsFromRoom -->
 
-            <th>{{light.id}}</th>   <!-- Colonne contenant l'ID de la light -->
-            <th><button @click="switchLight(light)" class="btn btn-light">{{light.status}}</button></th>    <!-- Colonne contenant le bouton permettant d'éteindre et d'allumer la light -->
-            <th>{{light.color}}</th>    <!-- Colonne contenant la couleur de la light -->
-            <th>{{light.brightness}}</th>   <!-- Colonne contenant l'intensité lumineuse de la light -->
+            <!-- La balise td permet de signaler l'élément d'une colonne -->
+            <td>{{light.id}}</td>   <!-- Colonne contenant l'ID de la light -->
+            <td><button @click="switchLight(light)" class="btn btn-light">{{light.status}}</button></td>    <!-- Colonne contenant le bouton permettant d'éteindre et d'allumer la light -->
+            <td>{{light.color}}</td>    <!-- Colonne contenant la couleur de la light -->
+            <td>{{light.brightness}}</td>   <!-- Colonne contenant l'intensité lumineuse de la light -->
 
             <td> <!-- Colonne contenant le bouton permettant de changer la couleur de la light -->
                 <select v-model="color_light" @click="changeColor(light)"> <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir la couleur de la light parmi les couleurs disponibles puis de l'appliquer lors du clic sur la couleur souhaitée -->
@@ -106,87 +135,23 @@
                     <option>jaune</option>
                     <option>rouge</option>
 
-
-                </select>   <!-- Fin de la liste -->
-
-            </td> <!-- Fin de la colonne -->
-
-            <th>    <!-- Nouvelle colonne -->
-
-                <div class="slidecontainer">    <!-- Permet de créer le curseur gérant l'intensité lumineuse en entrant le type de curseur, sa valeur minimale, sa valeur maximale, sa valeur par défaut et son nom -->
-                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                </div> <!-- Fin du curseur -->
-
-            </th>   <!-- Fin de la colonne -->
-
-
-        </tr>   <!-- Fin de la ligne -->
-
-        </tbody>    <!-- Fin des données du tableau -->
-
+            </td>   <!-- Fin de colonne -->
+            <td>    <!-- Nouvelle colonne -->
+                <!-- Permet de créer le curseur gérant l'intensité lumineuse en entrant le type de curseur, sa valeur minimale, sa valeur maximale, sa valeur par défaut et son nom -->
+                <input v-model="bri" type="range" min="1" max="100" value="50" class="slider" id="myRange" @input="changeBrightness(light)">
+            </td>   <!-- Fin de colonne -->
+        </tr>   <!-- Fin de ligne -->
+        </tbody>    <!-- Fin des données contenues par le tableau -->
     </table>    <!-- Fin du tableau -->
+</div>  <!-- Fin du bloc building -->
 
 
-    <hr/>   <!-- Séparation horizontale -->
-
-    <h2>Create a room</h2>  <!-- Sous-titre annonçant la possibilité de créer une room -->
-    <select v-model="room_buildingId">  <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir le building dans lequel on va créer la nouvelle room parmi les buildings disponibles -->
-        <option value="" disabled selected>Select a building</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les buildings disponibles -->
-        <option v-for="building in allbuildings" v-bind:value="building.id">    <!-- On parcourt l'ensemble des buildings de allbuildings -->
-            {{ building.name }}     <!-- Pour chaque building, on affiche son nom dan sle menu déroulant -->
-
-        </option> <!-- Fin des options du menu déroulant -->
-
-    </select>   <!-- Fin du meu déroulant -->
-    <input v-model="room_name" placeholder="Enter a room name"></input>     <!-- On demande à l'utilisateur de saisir le nom de la nouvelle room, l'ID sera ajouté automatiquement lors de l'introduction dans la base de données -->
-    <input type="number" v-model="room_floor" placeholder="Enter a floor"></input>  <!-- On demande à l'utilisateur de saisir l'étage de la nouvelle room -->
-    <button @click="createRoom()" class="btn btn-light">create</button>     <!-- Bouton qui déclenche la création de la room et l'ajout en base -->
-    <p>{{error_create_room}}</p>    <!-- Appel une fonction si une erreur survient lors de la création -->
-
-
-
-    <hr/>   <!-- Séparation horizontale -->
-
-    <h2>Create a light</h2>     <!-- Sous-titre annonçant la possibilité de créer une light -->
-    <select v-model="light_buildingId" @click="search_rooms_for_create_light()">    <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir l'ID du building dans lequel on va créer la nouvelle light parmi les buildings disponibles -->
-        <option value="" disabled selected>Select a building</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les buildings disponibles -->
-        <option v-for="building in allbuildings" v-bind:value="building.id">    <!-- On parcourt l'ensemble des buildings de allbuildings -->
-            {{ building.name }}     <!-- Pour chaque building, on affiche son nom dan sle menu déroulant -->
-
-        </option> <!-- Fin des options du menu déroulant -->
-
-    </select>   <!-- Fin du meu déroulant -->
-
-    <select v-model="light_roomId" >    <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir l'ID de la room dans laquelle on va créer la nouvelle light parmi les rooms disponibles -->
-        <option value="" disabled selected>Select a room</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les rooms disponibles -->
-        <option v-for="room in roomsForCreateLight" v-bind:value="room.id">     <!-- On parcourt toutes les rooms du building -->
-            {{ room.name }}     <!-- Pour chacun des rooms, on affiche son nom dans le menu déroulant -->
-
-        </option> <!-- Fin des options du menu déroulant -->
-
-    </select>   <!-- Fin du meu déroulant -->
-    <button @click="createLight()" class="btn btn-light">create</button>    <!-- Bouton qui déclenche la création de la light et l'ajout en base -->
-    <p>{{error_create_room}}</p>    <!-- Appel une fonction si une erreur survient lors de la création -->
-  
-  <hr/>   <!-- Séparation horizontale -->
-
-
-    <h2>Create a building</h2>  <!-- Sous-titre annonçant la possibilité de créer un building -->
-    <input v-model="building_name" placeholder="Enter a building name"></input>  <!-- Demande de saisie du nom du nouveau building par l'utilisateur, l'ID sera ajouté automatiquement lors de l'introduction dans la base de données -->
-    <button @click="createBuilding()" class="btn btn-light">create</button>     <!-- Bouton qui déclenche la création du building et l'ajout en base -->
-
-
-</div>  <!-- Fin du bloc -->
-
-<script src="https://unpkg.com/vue"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
 
 <script>    // Début du script Vuejs
 
-var url = "http://localhost:8080/api"   // Variable contenant l'URL de l'API
+
+var url = "https://faircorp-benjamin.cleverapps.io/api"     // Variable contenant l'URL de l'API
+
 
 var building_vue = new Vue({    // Création d'une instance de vue appelée building_vue
 
@@ -196,18 +161,10 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
     allrooms: [],   // Rassemblera l'ensemble des rooms existantes
     alllights: [],   // Rassemblera l'ensemble des lights existantes
     roomsFromBuilding: [],   // Rassemblera l'ensemble des rooms d'un building
-    lightsFromRoom: [],  // Rassemblera l'ensemble des lights d'une room
-    light_buildingId: '',   // Contient l'ID du building auquel appartient la light
-    light_roomId: '',   // Contient l'ID de la room à laquelle appartient la light
-    roomsForCreateLight: [],    // Contient les rooms du building dans lesquelles on peut créer une lignt
+    lightsFromRoom: [],  // Rassemblera l'ensemble des lightss d'une room
     building_name: '',    // Contiendra le nom d'un building
-    room_name: '',  // Contient le nom de la room
-    room_floor: '',     // Contient l'étage de la room
-    room_buildingId: '',    // Contient ll'ID du building auquel appartient la room
-    light_room: '',
-    put_response: [],
-    color_light: "vert",    // Initialise la couleur d'une light
-    error_create_room: ''   // Contient le message d'erreur
+    color_light: "vert"    // Initialise la couleur d'une light
+
   },
   created(){    // S'exécute dès le début de l'exécution
   	let get_buildings_url = url + "/buildings";     // Obtention de l'URL pour récupérer tous les buildings
@@ -238,11 +195,6 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
               console.log("message received from cloudMqtt: " , topic , new TextDecoder("utf-8").decode(payload));  // On prévient l'utilisateur de la réception du message et on affiche l'auteur
               msg = new TextDecoder("utf-8").decode(payload);   // On stocke le message reçu
               console.log(msg);     // Puis on affiche le message
-              this.color_test = msg.toString();
-              this.color_test = " salut ";
-
-
-
 
               if (topic == "order"){    // Si le message provient de order
 
@@ -318,48 +270,15 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
     axios.put(put_url);     // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   },
 
+
    changeColor: function(light){    // Changement de la couleur d'une light
-    var color_url = url + "/lights/" + light.id + "/switchcolor/" + this.color_light ;  // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de couleur en précisant la nouvelle couleur
+    var color_url = url + "/lights/" + light.id + "/changeColor/" + this.color_light ;  // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de couleur en précisant la nouvelle couleur
     axios.put(color_url);   // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   },
-  createBuilding: function(){   // Méthode pour créer un building
-    var create_building_url = url + "/buildings"    // On stocke l'URL qui permet de récupérer l'ensemble des buildings existants à l'aide d'une requête GET
-    var string_post = '{"name": "'+ this.building_name + '"}';  // On crée le fichier JSON contenant le nom du building
-    var json_post = JSON.parse(string_post);    // On convertit le fichier JSON précédemment créé en objet javascript
-    
-    axios.post(create_building_url,json_post);  // On utilise Axios afin de former une requête POST vers la base de données et de créer le building
-  },
 
-  createRoom: function(){   // Méthode pour créer une room
-    var create_room_url = url +"/rooms";    // On stocke l'URL qui permet de récupérer l'ensemble des rooms existantes à l'aide d'une requête GET
-    var string_post = '{"floor": ' + this.room_floor + ', "name": "' + this.room_name + '" , "status": "ON" , "buildingId": ' + this.room_buildingId + '}';    // On crée le fichier JSON contenant les attributs de la nouvelle room
-    var json_post = JSON.parse(string_post);    // On convertit le fichier JSON précédemment créé en objet javascript
-    if(typeof(this.room_buildingId) != "undefined" ){   // On vérifie que l'utilisateur a bien sélectionné un building dans lequel créer la room
-        axios.post(create_room_url , json_post);    // On utilise Axios afin de former une requête POST et de créer la room
-    }
-    else{this.error_create_room = 'please select a building';}  // Si une erreur survient, on complète le message d'avertissement pour l'utilisateur
-  },
-
-  createLight: function(){  // Méthode pour créer une light
-    var create_light_url = url + "/lights";     // On stocke l'URL qui permet de récupérer l'ensemble des lights existantes à l'aide d'une requête GET
-    var string_post = '{"status": "OFF" , "brightness": "0", "color": "vert", "level" : 9 , "roomId": ' + this.light_roomId + '}';  // On crée le fichier JSON contenant les attributs de la nouvelle light
-    var json_post = JSON.parse(string_post);    // On convertit le fichier JSON précédemment créé en objet javascript
-    if(typeof(this.light_roomId | this.light_buildingId) != "undefined" ){  // On vérifie que l'utilisateur a bien sélectionné un building et une room dans lesquels créer la light
-        axios.post(create_light_url , json_post);   // On utilise Axios afin de former une requête POST et de créer la light
-    }
-    else{this.error_create_room = 'please select a building and a room';}   // Si une erreur survient, on complète le message d'avertissement pour l'utilisateur
-
-  },
-
-  search_rooms_for_create_light: function(){    // Méthode de recherche des rooms d'un building
-        console.log("click ok");    // On demande à l'utilisateur de cliquer sur ok
-        console.log(this.light_buildingId);     // On affiche l'ID du building sélectionné dans lequel l'utilisateur veut créer une light
-        this.roomsForCreateLight = [];  // Remise à zéro de la liste contenant les rooms d'un précédent building
-  	    for (var i in this.allrooms){   // On parcourt toutes les rooms de allrooms
-    	    if (this.allrooms[i]["buildingId"] == this.light_buildingId){   // Pour chaque room, on vérifie l'ID du building auquel elle appartient
-    		    this.roomsForCreateLight.push(this.allrooms[i]);    // Si cet ID est égal à celui du building qui nous intéresse, on ajoute cette room à la liste des rooms du building sélectionné
-    	    }
-        };
+  changeBrightness: function(light){    // Changement de l'intensité lumineuse d'une light
+    var put_url = url + "/lights/" + light.id + "/changeBrightness/" + this.bri ;   // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de l'intensité lumineuse en précisant la nouvelle valeur
+    axios.put(put_url);     // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   }
 
 }})
