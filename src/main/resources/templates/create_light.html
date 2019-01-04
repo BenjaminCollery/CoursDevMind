@@ -1,112 +1,118 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Getting Started: Serving Web Content</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
+<!DOCTYPE HTML>     <!-- Indique le numéro de version du langage HTML utilisé -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">  <!-- Balise obligatoire dans un fichier html -->
+<head>  <!-- En-tête -->
+    <title>Getting Started: Serving Web Content</title>     <!-- Titre de la page -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   <!-- Métadonnées non affichées sur la page, utiles par exemple aux navigateurs web, aux moteurs de recherche, et aux outils d'indexation en général -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">  <!-- Indique la relation qu'il existe entre ce document et le contenu de href -->
+</head>     <!-- Fin de l'en-tête -->
+<body>  <!-- Début du contenu de la page -->
 
-<script src="https://unpkg.com/vue"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+<script src="https://unpkg.com/vue"></script>    <!-- Permet d'inclure Vue -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>     <!-- Permet d'obetnir des avertissements utiles dans la console lors de la compilation et de l'exécution -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>   <!-- Nécessaire à l'utilisation d'Axios quui permet de se connecter à l'API -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    <!-- Permet au code javascript de formuler des requêtes en utilisant l'outil ajax et des fonctionnalités du framework jquery -->
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>     <!-- Permet au code javascript d'utiliser des fonctionnalités du protocole de messagerie mqtt -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>   <!-- Permet d'utiliser la bibliothèque paho pour gérer les connexions d'un client mqtt -->
 
 
-<div id="create_light">
 
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Philips Hue Control Platform</a>
-            </div>
-            <ul class="nav navbar-nav">
+<div id="create_light">     <!-- Crée le bloc create_light -->
+
+    <nav class="navbar navbar-default">     <!-- Début d'une section de navigation, bloc d'une page contenant des liens vers d'autres sections de cette page ou vers d'autres pages -->
+        <div class="container-fluid">   <!-- Crée un bloc -->
+            <div class="navbar-header">     <!-- Crée un autre bloc -->
+                <a class="navbar-brand" href="#">Philips Hue Control Platform</a>   <!-- La balise a indique que le texte qui suit est un lien hypertexte menant vers le contenu de href -->
+            </div>  <!-- Fin du bloc -->
+            <ul class="nav navbar-nav">     <!-- La balise ul permet de créer une liste d'éléments -->
+
+                <!-- La balise li indique un élément dans une liste, l'ajout de la balise a indique que cet élément est un lien hypertexterenvoyant vers le contenu de l'attribut href -->
                 <li class="active"><a href="/">Home</a></li>
                 <li><a href="/create_building">Create Building</a></li>
                 <li><a href="/create_room">Create Room</a></li>
                 <li><a href="/create_light">Create Light</a></li>
-            </ul>
-        </div>
-    </nav>
+            </ul>   <!-- Fin de la liste d'éléments -->
+        </div>  <!-- Fin du bloc -->
+    </nav>  <!-- Fin de la section de navigation -->
 
-    <h1>Create a light</h1>
-    <select v-model="light_buildingId" @click="search_rooms_for_create_light()">
-        <option value="" disabled selected>Select a building</option>
-        <option v-for="building in allbuildings" v-bind:value="building.id">
-            {{ building.name }}
-        </option>
-    </select>
-    <select v-model="light_roomId" >
-        <option value="" disabled selected>Select a room</option>
-        <option v-for="room in roomsForCreateLight" v-bind:value="room.id">
-            {{ room.name }}
-        </option>
-    </select>
-    <button @click="createLight()" class="btn btn-light">create</button>
-    <p>{{message}}</p>
-</div>
+    <h1>Create a light</h1>     <!-- Titre de la page à son ouverture -->
+    <select v-model="light_buildingId" @click="search_rooms_for_create_light()">    <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir l'ID du building dans lequel on va créer la nouvelle light parmi les buildings disponibles -->
+        <option value="" disabled selected>Select a building</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les buildings disponibles -->
+        <option v-for="building in allbuildings" v-bind:value="building.id">    <!-- On parcourt l'ensemble des buildings de allbuildings -->
+            {{ building.name }}     <!-- Pour chaque building, on affiche son nom dan sle menu déroulant -->
 
-<script>
+        </option> <!-- Fin des options du menu déroulant -->
 
-var url = "http://localhost:8080/api"
+    </select>   <!-- Fin du meu déroulant -->
 
-var building_vue = new Vue({
+    <select v-model="light_roomId" >    <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir l'ID de la room dans laquelle on va créer la nouvelle light parmi les rooms disponibles -->
+        <option value="" disabled selected>Select a room</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les rooms disponibles -->
+        <option v-for="room in roomsForCreateLight" v-bind:value="room.id">     <!-- On parcourt toutes les rooms du building -->
+            {{ room.name }}     <!-- Pour chacun des rooms, on affiche son nom dans le menu déroulant -->
+
+        </option> <!-- Fin des options du menu déroulant -->
+
+    </select>   <!-- Fin du meu déroulant -->
+    <button @click="createLight()" class="btn btn-light">create</button>    <!-- Bouton qui déclenche la création de la light et l'ajout en base -->
+    <p>{{message}}</p>  <!-- Appel d'une variable contenant un message, soit un message de confirmation soit un message d'erreur -->
+
+</div>  <!-- Fin du bloc -->
+
+<script>    // Début du script Vuejs
+
+var url = "https://faircorp-benjamin.cleverapps.io/api"  // Variable contenant l'URL de l'API
+
+var building_vue = new Vue({    // Création d'une instance de vue appelée building_vue
 
   el: '#create_light',
-  data: {
-  building_name: '',
-  light_buildingId: '',
-  allbuildings: [],
-  allrooms: [],
-  light_roomId: '',
-  roomsForCreateLight: [],
-  message: ''
+  data: {   // Contient l'ensemble des données qui seront réactives, c'est-à-dire qui s'actualiseront en direct sur la page
+  building_name: '',    // Contiendra le nom d'un building
+  light_buildingId: '',     // Contient l'ID du building auquel appartient la light
+  allbuildings: [],     // Rassemblera l'ensemble des buildings existants
+  allrooms: [],     // Rassemblera l'ensemble des rooms existantes
+  light_roomId: '',     // Contient l'ID de la room à laquelle appartient la light
+  roomsForCreateLight: [],   // Contient les rooms du building dans lesquelles on peut créer une lignt
+  message: ''   // Contiendra un  message à afficher
   },
-   created(){
-  	let get_buildings_url = url + "/buildings";
-   	fetch(get_buildings_url)
-    .then(response => response.json())
-    .then(json => {this.allbuildings = json
-    });
-    let get_rooms_url = url + "/rooms";
-   	fetch(get_rooms_url)
-    .then(response => response.json())
-    .then(json => {this.allrooms = json
-    });
-  },
-  methods: {
+    created(){    // S'exécute dès le début de l'exécution
+        let get_buildings_url = url + "/buildings";     // Obtention de l'URL pour récupérer tous les buildings
+        fetch(get_buildings_url)    // Permet d'aller chercher les données grâce à l'URL et à une requête GET
+            .then(response => response.json())  // Récupération du JSON, issu de la requête GET, contenant ces données
+            .then(json => {this.allbuildings = json     // Conversion puis stockage des données contenues dans le JSON dans la variable allbuildings
+            });
+        let get_rooms_url = url + "/rooms";     // Obtention de l'URL pour récupérer toutes les rooms
+        fetch(get_rooms_url)    // Permet d'aller chercher les données grâce à l'URL et à une requête GET
+            .then(response => response.json())  // Récupération du JSON, issu de la requête GET, contenant ces données
+            .then(json => {this.allrooms = json     // Conversion puis stockage des données contenues dans le JSON dans la variable allrooms
+            });
+    },
+  methods: {    // Ensemble des méthodes
 
-  createLight: function(){
-    var create_light_url = url + "/lights";
-    console.log(this.light_roomId);
-    console.log(this.light_buildingId);
+      createLight: function(){  // Méthode pour créer une light
+          var create_light_url = url + "/lights";     // On stocke l'URL qui permet de récupérer l'ensemble des lights existantes à l'aide d'une requête GET
+          console.log(this.light_roomId);   // On affiche l'ID de la room dans laquelle on veut créer la light
+          console.log(this.light_buildingId);   // On affiche l'ID du building dans lequel on veut créer la light
 
-    if( this.light_roomId != '' && this.light_buildingId != '' ){
-        var string_post = '{"status": "OFF" , "brightness": "0", "color": "vert", "level" : 9 , "roomId": ' + this.light_roomId + '}';
-        var json_post = JSON.parse(string_post);
-        axios.post(create_light_url , json_post);
-        this.message = 'the light has been added';
-    }
-    else{this.message = 'please select a building and a room';}
+          if( this.light_roomId != '' && this.light_buildingId != '' ){     // On vérifie que l'utilisateur a bien sélectionné un building et une room dans lesquels créer la light
+              var string_post = '{"status": "OFF" , "brightness": "0", "color": "vert", "level" : 9 , "roomId": ' + this.light_roomId + '}';    // On crée le fichier JSON contenant les attributs de la nouvelle light
+              var json_post = JSON.parse(string_post);  // On convertit le fichier JSON précédemment créé en objet javascript
+              axios.post(create_light_url , json_post);     // On utilise Axios afin de former une requête POST et de créer la light
+              this.message = 'the light has been added';    // On informe l'utilisateur du succés de la méthode
+          }
+          else{this.message = 'please select a building and a room';}   // Si l'utilisateur n'a pas renseigné les ID du building et de la light dans lesquels il souhaite créer la light, on l'avertit
 
-  },
+      },
 
-  search_rooms_for_create_light: function(){
-        this.roomsForCreateLight = [];
-  	    for (var i in this.allrooms){
-    	    if (this.allrooms[i]["buildingId"] == this.light_buildingId){
-    		    this.roomsForCreateLight.push(this.allrooms[i]);
-    	    }
-        };
+      search_rooms_for_create_light: function(){    // Méthode de recherche des rooms d'un building
+      this.roomsForCreateLight = [];  // Remise à zéro de la liste contenant les rooms d'un précédent building
+      for (var i in this.allrooms){   // On parcourt toutes les rooms de allrooms
+          if (this.allrooms[i]["buildingId"] == this.light_buildingId){   // Pour chaque room, on vérifie l'ID du building auquel elle appartient
+              this.roomsForCreateLight.push(this.allrooms[i]);    // Si cet ID est égal à celui du building qui nous intéresse, on ajoute cette room à la liste des rooms du building sélectionné
+          }
+      };
   }
 
 }})
 
-</script>
-
-
-
-</body>
-</html>
+</script>   <!-- Fin du script Vuejs -->
+</body>     <!-- Fin du contenu de la page -->
+</html>     <!-- Fin du document html -->
