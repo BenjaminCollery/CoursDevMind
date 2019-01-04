@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @CrossOrigin    // Permet d'ouvrir l'API avec plusieurs applications différentes
-@RestController    // Annonce l'utilisation d'un service REST - controlleur
+@RestController    // Annonce l'utilisation d'un service REST - ici controlleur de la classe light
 @RequestMapping("/api/lights")  // Permet de définir le préfixe de l'URL qui mène à notre base de données
 @Transactional      // Classe utilisée lors des transactions
 public class LightController {

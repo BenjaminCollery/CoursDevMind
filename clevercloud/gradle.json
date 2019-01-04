@@ -1,3 +1,4 @@
+/* Fichier JSON qui permet le déploiement sur clevercloud */
 {
   "build": {
     "type": "gradle",
