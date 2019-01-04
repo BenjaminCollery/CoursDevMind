@@ -1,6 +1,6 @@
-<html xmlns:th="http://www.thymeleaf.org">  <!-- Balise obligatoire dans un fichier html -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">  <!-- Balise obligatoire dans un fichier html -->
 <head>  <!-- En-tête -->
-    <title> Spring in practice </title>     <!-- Titre de la page -->
+    <title> Philips Hue Control </title>     <!-- Titre de la page -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">  <!-- Indique la relation qu'il existe entre ce document et le contenu de href -->
 </head>     <!-- Fin de l'en-tête -->
 <body>  <!-- Début du contenu de la page -->
@@ -36,11 +36,11 @@
         <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
         <tr>    <!-- Nouvelle ligne -->
 
-            <!-- La balise th permet d'indiquer que ce qu'elle contient sera le nom d'une colonne -->
+            <!-- La balise th permet d'indiquer que ce qu'elle contient est le titre d'une colonne -->
 
             <th>Building ID</th>
             <th>Building Name</th>
-            <th>Select building</th>
+            <th>Select Building</th>
 
         </tr>   <!-- Fin de la ligne -->
 
@@ -48,7 +48,7 @@
 
         <tbody>     <!-- Contient les données du tableau -->
         <tr v-for="building in allbuildings">   <!-- Nouvelle ligne créée pour chaque building existant dans allbuildings -->
-
+            <!-- La balise td permet d'indiquer que ce qu'elle contient est un élément de colonne -->
             <td>{{building.id}}</td>    <!-- Colonne contenant l'ID du building -->
             <td>{{building.name}}</td>  <!-- Colonne contenant le nom du building -->
             <td><button @click="getRoomsFromBuilding(building)" class="btn btn-light">Select</button></td>  <!-- Bouton Select permettant d'accéder aux rooms du building au travers d'une requête GET -->
@@ -82,7 +82,8 @@
             <td>{{room.id}}</td>    <!-- Colonne contenant l'ID de la room -->
             <td>{{room.name}}</td>  <!-- Colonne contenant le nom de la room -->
             <td>{{room.floor}}</td>     <!-- Colonne contenant l'étage de la room -->
-            <td>{{room.status}}</td>    <!-- Colonne contenant le statut de la room -->
+            <td v-if="room.status=='ON'"><img src="ic_bulb_on.png" height="20"></td>
+            <td v-else><img src="ic_bulb_off.png" height="20"></td>    <!-- Colonne contenant le statut de la room -->
             <td><button @click="getLightsFromRoom(room)" class="btn btn-light">Select</button></td>     <!-- Bouton Select permettant d'accéder aux lights de la room au travers d'une requête GET -->
 
         </tr>   <!-- Fin de la ligne -->
@@ -91,7 +92,6 @@
 
     </table>    <!-- Fin du tableau -->
 
-    <hr/>   <!-- Séparation horizontale -->
 
     <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables3" style="color: black;">   <!-- Crée un tableau avec des zébras,un fond gris, un effet compacté et des contours dont le nom du tableau est spécifié dans l'ID (utile au CSS) et la couleur d'écriture est noire -->
         <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
@@ -100,9 +100,9 @@
             <!-- La balise th permet d'indiquer que ce qu'elle contient sera le nom d'une colonne -->
             <th>Light ID</th>
             <th>Light Status</th>
-            <th>Light color</th>
-            <th>Light brightness</th>
-            <th>Color</th>
+            <th>Light Color</th>
+            <th>Light Brightness</th>
+            <th>Change Color</th>
             <th>Change Brightness</th>
 
         </tr>   <!-- Fin de la ligne -->
@@ -113,24 +113,24 @@
         <tr v-for="light in lightsFromRoom">    <!-- Nouvelle ligne créée pour chaque light existant dans lightsFromRoom -->
 
             <td>{{light.id}}</td>   <!-- Colonne contenant l'ID de la light -->
-            <td><button @click="switchLight(light)" class="btn btn-light">{{light.status}}</button></td>    <!-- Colonne contenant le bouton permettant d'éteindre et d'allumer la light -->
+            <td v-if="light.status=='ON'"><button @click="switchLight(light)" class="btn btn-light"><img src="ic_bulb_on.png" height="20"></button></td>
+            <td v-else><button @click="switchLight(light)" class="btn btn-light"><img src="ic_bulb_off.png" height="20"></button></td>
+            <!-- Colonne contenant le bouton permettant d'éteindre et d'allumer la light -->
             <td>{{light.color}}</td>    <!-- Colonne contenant la couleur de la light -->
             <td>{{light.brightness}}</td>   <!-- Colonne contenant l'intensité lumineuse de la light -->
 
-            <th> <!-- Colonne contenant le bouton permettant de changer la couleur de la light -->
+            <td> <!-- Colonne contenant le bouton permettant de changer la couleur de la light -->
                 <select v-model="color_light" @click="changeColor(light)"> <!-- La balise Select permet de choisir une option dans une liste / ici elle permet de choisir la couleur de la light parmi les couleurs disponibles puis de l'appliquer lors du clic sur la couleur souhaitée -->
-                    <option disabled value="">Select</option>   <!-- L'option disabled value empêche de soumettre Select au clic de l'utilisateur pour qu'il ne puisse cliquer que sur les couleurs disponibles -->
                     <!-- Liste des couleurs disponibles -->
                     <option>vert</option>
                     <option>bleu</option>
                     <option>jaune</option>
                     <option>rouge</option>
-
-
+                </select>
             </td>   <!-- Fin de colonne -->
             <td>    <!-- Nouvelle colonne -->
                 <!-- Permet de créer le curseur gérant l'intensité lumineuse en entrant le type de curseur, sa valeur minimale, sa valeur maximale, sa valeur par défaut et son nom -->
-                <input v-model="bri" type="range" min="1" max="100" value="50" class="slider" id="myRange" @input="changeBrightness(light)">
+                <input v-model="bri" type="range" min="1" max="1000" value="500" class="slider" id="myRange" @input="changeBrightness(light)">
             </td>   <!-- Fin de colonne -->
         </tr>   <!-- Fin de ligne -->
         </tbody>    <!-- Fin des données contenues par le tableau -->
