@@ -25,7 +25,7 @@ public class HelloController {
 
         public MessageDto(String message) {
             this.message = message;
-        }   // Initialisation de la classe interne
+        }   // Initialisation de ka classe interne
 
         public String getMessage() {
             return message;

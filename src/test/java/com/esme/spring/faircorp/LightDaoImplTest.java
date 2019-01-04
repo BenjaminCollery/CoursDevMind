@@ -24,7 +24,7 @@ public class LightDaoImplTest {
 
     @Test   // Utilisation d'un Unit Test
     public void shouldFindOnLights() {
-                assertThat(lightDaoCustom.findOnLights())   // Vérifie les caractéristiques du résultat de FindOnLights()
+                assertThat(lightDaoCustom.findOnLights())   // Vérifie les caractéristiques du résultats de FindOnLights()
                 .hasSize(1)
                 .extracting("id", "status")
                 .containsExactly(tuple(-1L, Status.ON));

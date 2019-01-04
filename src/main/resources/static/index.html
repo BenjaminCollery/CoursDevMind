@@ -1,41 +1,47 @@
-<html xmlns:th="http://www.thymeleaf.org">  <!-- Balise obligatoire dans un fichier html -->
-<head>  <!-- En-tête -->
-    <title> Spring in practice </title>     <!-- Titre de la page -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">  <!-- Indique la relation qu'il existe entre ce document et le contenu de href -->
-</head>     <!-- Fin de l'en-tête -->
-<body>  <!-- Début du contenu de la page -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
 
-<script src="https://unpkg.com/vue"></script>    <!-- Permet d'inclure Vue -->
-<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>     <!-- Permet d'obetnir des avertissements utiles dans la console lors de la compilation et de l'exécution -->
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>   <!-- Nécessaire à l'utilisation d'Axios quui permet de se connecter à l'API -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    <!-- Permet au code javascript de formuler des requêtes en utilisant l'outil ajax et des fonctionnalités du framework jquery -->
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>     <!-- Permet au code javascript d'utiliser des fonctionnalités du protocole de messagerie mqtt -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>   <!-- Permet d'utiliser la bibliothèque paho pour gérer les connexions d'un client mqtt -->
+    <title> Philips Hue Control </title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+
+<script src="https://unpkg.com/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
 
 <div id="building">     <!-- Crée le bloc building -->
+    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables1" style="color: black;"> <!-- Crée un tableau avec des zébras,un fond gris, un effet compacté et des contours dont le nom du tableau est spécifié dans l'ID (utile au CSS) et la couleur d'écriture est noire -->
+        <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
+        <tr>    <!-- Nouvelle ligne -->
 
-    <nav class="navbar navbar-default">     <!-- Début d'une section de navigation, bloc d'une page contenant des liens vers d'autres sections de cette page ou vers d'autres pages -->
-        <div class="container-fluid">   <!-- Crée un bloc -->
-            <div class="navbar-header">     <!-- Crée un autre bloc -->
-                <a class="navbar-brand" href="#">Philips Hue Control Platform</a>   <!-- La balise a indique que le texte qui suit est un lien hypertexte menant vers le contenu de href -->
-            </div>  <!-- Fin du bloc -->
-            <ul class="nav navbar-nav">     <!-- La balise ul permet de créer une liste d'éléments -->
 
-                <!-- La balise li indique un élément dans une liste, l'ajout de la balise a indique que cet élément est un lien hypertexterenvoyant vers le contenu de l'attribut href -->
+<div id="building">
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Philips Hue Control Platform</a>
+            </div>
+            <ul class="nav navbar-nav">
                 <li class="active"><a href="/">Home</a></li>
                 <li><a href="/create_building">Create Building</a></li>
                 <li><a href="/create_room">Create Room</a></li>
                 <li><a href="/create_light">Create Light</a></li>
-            </ul>   <!-- Fin de la liste d'éléments -->
-        </div>  <!-- Fin du bloc -->
-    </nav>  <!-- Fin de la section de navigation -->
+            </ul>
+        </div>
+    </nav>
 
 
-    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables1" style="color: black;">   <!-- Crée un tableau avec des zébras,un fond gris, un effet compacté et des contours dont le nom du tableau est spécifié dans l'ID (utile au CSS) et la couleur d'écriture est noire -->
-        <thead>     <!-- Regroupe les informations d'en-tête d'un tableau -->
-        <tr>    <!-- Nouvelle ligne -->
+    <table class="table table-striped table-hover table-condensed table-bordered" id="dataTables1" style="color: black;">
+        <thead>
+        <tr>
 
-            <!-- La balise th permet d'indiquer que ce qu'elle contient sera le nom d'une colonne -->
+            <!-- La balise th permet d'indiquer que ce qu'elle contient est le titre d'une colonne -->
+
             <th>Building ID</th>
             <th>Building Name</th>
             <th>Select Building</th>
@@ -46,7 +52,9 @@
 
         <tbody>     <!-- Contient les données du tableau -->
         <tr v-for="building in allbuildings">   <!-- Nouvelle ligne créée pour chaque building existant dans allbuildings -->
-            <!-- La balise td permet de signaler l'élément d'une colonne -->
+
+            <!-- La balise td permet d'indiquer que ce qu'elle contient est un élément de colonne -->
+
             <td>{{building.id}}</td>    <!-- Colonne contenant l'ID du building -->
             <td>{{building.name}}</td>  <!-- Colonne contenant le nom du building -->
             <td><button @click="getRoomsFromBuilding(building)" class="btn btn-light">Select</button></td>  <!-- Bouton Select permettant d'accéder aux rooms du building au travers d'une requête GET -->
@@ -76,11 +84,12 @@
 
         <tbody>     <!-- Contient les données du tableau -->
         <tr v-for="room in roomsFromBuilding">  <!-- Nouvelle ligne créée pour chaque room existant dans roomsFromBuilding -->
-            <!-- La balise td permet de signaler l'élément d'une colonne -->
+
             <td>{{room.id}}</td>    <!-- Colonne contenant l'ID de la room -->
             <td>{{room.name}}</td>  <!-- Colonne contenant le nom de la room -->
             <td>{{room.floor}}</td>     <!-- Colonne contenant l'étage de la room -->
-            <td>{{room.status}}</td>    <!-- Colonne contenant le statut de la room -->
+            <td v-if="room.status=='ON'"><img src="ic_bulb_on.png" height="20"></td>
+            <td v-else><img src="ic_bulb_off.png" height="20"></td>    <!-- Colonne contenant le statut de la room -->
             <td><button @click="getLightsFromRoom(room)" class="btn btn-light">Select</button></td>     <!-- Bouton Select permettant d'accéder aux lights de la room au travers d'une requête GET -->
 
         </tr>   <!-- Fin de la ligne -->
@@ -109,9 +118,10 @@
         <tbody>     <!-- Contient les données du tableau -->
         <tr v-for="light in lightsFromRoom">    <!-- Nouvelle ligne créée pour chaque light existant dans lightsFromRoom -->
 
-            <!-- La balise td permet de signaler l'élément d'une colonne -->
             <td>{{light.id}}</td>   <!-- Colonne contenant l'ID de la light -->
-            <td><button @click="switchLight(light)" class="btn btn-light">{{light.status}}</button></td>    <!-- Colonne contenant le bouton permettant d'éteindre et d'allumer la light -->
+            <td v-if="light.status=='ON'"><button @click="switchLight(light)" class="btn btn-light"><img src="ic_bulb_on.png" height="20"></button></td>
+            <td v-else><button @click="switchLight(light)" class="btn btn-light"><img src="ic_bulb_off.png" height="20"></button></td>
+            <!-- Colonne contenant le bouton permettant d'éteindre et d'allumer la light -->
             <td>{{light.color}}</td>    <!-- Colonne contenant la couleur de la light -->
             <td>{{light.brightness}}</td>   <!-- Colonne contenant l'intensité lumineuse de la light -->
 
@@ -123,20 +133,24 @@
                     <option>jaune</option>
                     <option>rouge</option>
                 </select>
-            </td>   <!-- Fin de colonne -->
-            <td>    <!-- Nouvelle colonne -->
+
+            </td>
+            <td>
                 <!-- Permet de créer le curseur gérant l'intensité lumineuse en entrant le type de curseur, sa valeur minimale, sa valeur maximale, sa valeur par défaut et son nom -->
-                <input v-model="bri" type="range" min="1" max="100" value="50" class="slider" id="myRange" @input="changeBrightness(light)">
-            </td>   <!-- Fin de colonne -->
-        </tr>   <!-- Fin de ligne -->
-        </tbody>    <!-- Fin des données contenues par le tableau -->
-    </table>    <!-- Fin du tableau -->
-</div>  <!-- Fin du bloc building -->
+                <input v-model="bri" type="range" min="1" max="1000" value="500" class="slider" id="myRange" @input="changeBrightness(light)">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
 
 <script>    // Début du script Vuejs
 
 
-var url = "https://faircorp-benjamin.cleverapps.io/api"     // Variable contenant l'URL de l'API
+var url = "https://faircorp-benjamin.cleverapps.io/api"
+
 
 var building_vue = new Vue({    // Création d'une instance de vue appelée building_vue
 
@@ -148,6 +162,8 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
     roomsFromBuilding: [],   // Rassemblera l'ensemble des rooms d'un building
     lightsFromRoom: [],  // Rassemblera l'ensemble des lightss d'une room
     building_name: '',    // Contiendra le nom d'un building
+    light_room: '',
+    put_response: [],
     color_light: "vert"    // Initialise la couleur d'une light
 
   },
@@ -180,6 +196,11 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
               console.log("message received from cloudMqtt: " , topic , new TextDecoder("utf-8").decode(payload));  // On prévient l'utilisateur de la réception du message et on affiche l'auteur
               msg = new TextDecoder("utf-8").decode(payload);   // On stocke le message reçu
               console.log(msg);     // Puis on affiche le message
+              this.color_test = msg.toString();
+              this.color_test = " salut ";
+
+
+
 
               if (topic == "order"){    // Si le message provient de order
 
@@ -260,10 +281,10 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
     var color_url = url + "/lights/" + light.id + "/changeColor/" + this.color_light ;  // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de couleur en précisant la nouvelle couleur
     axios.put(color_url);   // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   },
-    
-  changeBrightness: function(light){    // Changement de l'intensité lumineuse d'une light
-    var put_url = url + "/lights/" + light.id + "/changeBrightness/" + this.bri ;   // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de l'intensité lumineuse en précisant la nouvelle valeur
-    axios.put(put_url);     // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
+
+  changeBrightness: function(light){
+    var put_url = url + "/lights/" + light.id + "/changeBrightness/" + this.bri ;
+    axios.put(put_url);
   }
 
 }})
