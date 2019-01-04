@@ -1,7 +1,7 @@
 package com.esme.spring.faircorp.model;
 
 /*
-Création d'un objet de transfert de données pour la classe Building
+Création d'un objet de transfert de données pour la classe light
  */
 public class LightDto {
 
