@@ -1,72 +1,71 @@
-<!DOCTYPE HTML>     <!-- Indique le numéro de version du langage HTML utilisé -->
-<html xmlns:th="http://www.thymeleaf.org">  <!-- Balise obligatoire dans un fichier html -->
-<head>  <!-- En-tête -->
-    <title>Getting Started: Serving Web Content</title>     <!-- Titre de la page -->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   <!-- Métadonnées non affichées sur la page, utiles par exemple aux navigateurs web, aux moteurs de recherche, et aux outils d'indexation en général -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">  <!-- Indique la relation qu'il existe entre ce document et le contenu de href -->
-</head>     <!-- Fin de l'en-tête -->
-<body>  <!-- Début du contenu de la page -->
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
 
-<script src="https://unpkg.com/vue"></script>    <!-- Permet d'inclure Vue -->
-<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>     <!-- Permet d'obetnir des avertissements utiles dans la console lors de la compilation et de l'exécution -->
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>   <!-- Nécessaire à l'utilisation d'Axios quui permet de se connecter à l'API -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    <!-- Permet au code javascript de formuler des requêtes en utilisant l'outil ajax et des fonctionnalités du framework jquery -->
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>     <!-- Permet au code javascript d'utiliser des fonctionnalités du protocole de messagerie mqtt -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>   <!-- Permet d'utiliser la bibliothèque paho pour gérer les connexions d'un client mqtt -->
+<script src="https://unpkg.com/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
 
 
-<div id="create_building">  <!-- Crée le bloc create_building -->
+<div id="create_building">
 
-    <nav class="navbar navbar-default">     <!-- Début d'une section de navigation, bloc d'une page contenant des liens vers d'autres sections de cette page ou vers d'autres pages -->
-        <div class="container-fluid">   <!-- Crée un bloc -->
-            <div class="navbar-header">     <!-- Crée un autre bloc -->
-                <a class="navbar-brand" href="#">Philips Hue Control Platform</a>   <!-- La balise a indique que le texte qui suit est un lien hypertexte menant vers le contenu de href -->
-            </div>  <!-- Fin du bloc -->
-            <ul class="nav navbar-nav">     <!-- La balise ul permet de créer une liste d'éléments -->
-
-                <!-- La balise li indique un élément dans une liste, l'ajout de la balise a indique que cet élément est un lien hypertexterenvoyant vers le contenu de l'attribut href -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Philips Hue Control Platform</a>
+            </div>
+            <ul class="nav navbar-nav">
                 <li class="active"><a href="/">Home</a></li>
                 <li><a href="/create_building">Create Building</a></li>
                 <li><a href="/create_room">Create Room</a></li>
                 <li><a href="/create_light">Create Light</a></li>
-            </ul>   <!-- Fin de la liste d'éléments -->
-        </div>  <!-- Fin du bloc -->
-    </nav>  <!-- Fin de la section de navigation -->
+            </ul>
+        </div>
+    </nav>
 
-    <h1>Create a building</h1>  <!-- Titre de la page à son ouverture -->
-    <input v-model="building_name" placeholder="Enter a building name"></input>     <!-- Demande de saisie du nom du nouveau building par l'utilisateur, l'ID sera ajouté automatiquement lors de l'introduction dans la base de données -->
-    <button href="/" @click="createBuilding()" class="btn btn-light">create</button>    <!-- Bouton qui déclenche la création du building et l'ajout en base -->
-    <p>{{message}}</p>  <!-- Appel d'une variable contenant un message, soit un message de confirmation soit un message d'erreur -->
-</div>  <!-- Fin du bloc -->
+    <h1>Create a building</h1>
+    <input v-model="building_name" placeholder="Enter a building name"></input>
+    <button href="/" @click="createBuilding()" class="btn btn-light">create</button>
+    <p>{{message}}</p>
+</div>
 
-<script>    // Début du script Vuejs
+<script>
 
-var url = "https://faircorp-benjamin.cleverapps.io/api"   // Variable contenant l'URL de l'API
+var url = "http://localhost:8080/api"
 
-var building_vue = new Vue({    // Création d'une instance de vue appelée building_vue
+var building_vue = new Vue({
 
   el: '#create_building',
-  data: {   // Contient l'ensemble des données qui seront réactives, c'est-à-dire qui s'actualiseront en direct sur la page
-  building_name: '',    // Contiendra le nom d'un building à créer
-  message: ''   // Contiendra un  message à afficher
+  data: {
+  building_name: '',
+  message: ''
   },
-  methods: {    // Ensemble des méthodes
+  methods: {
 
-  createBuilding: function(){   // Méthode pour créer un building
+  createBuilding: function(){
     var create_building_url = url + "/buildings"
-      var string_post = '{"name": "'+ this.building_name + '"}';  // On crée le fichier JSON contenant le nom du building
-      var json_post = JSON.parse(string_post);    // On convertit le fichier JSON précédemment créé en objet javascript
+    var string_post = '{"name": "'+ this.building_name + '"}';
+    var json_post = JSON.parse(string_post);
 
-      axios.post(create_building_url,json_post);  // On utilise Axios afin de former une requête POST vers la base de données et de créer le building
+    axios.post(create_building_url,json_post);
 
-    this.building_name = '';    // On vide à nouveau la variable building_name afin qu'elle soit réutilisable
-    this.message = 'the building has been added';   // On informe l'utilisateur du succés de la méthode
-
+    this.building_name = '';
+    this.message = 'the building has been added';
   }
 
 }})
 
-</script>   <!-- Fin du script Vuejs -->
-</body>     <!-- Fin du contenu de la page -->
-</html>     <!-- Fin du document html -->
+</script>
 
+
+
+</body>
+</html>
