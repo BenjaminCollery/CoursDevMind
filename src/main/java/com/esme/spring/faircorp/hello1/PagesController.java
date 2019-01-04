@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @CrossOrigin    // Permet d'ouvrir l'API avec plusieurs applications différentes
 @Controller     // Annonce l'utilisation d'un controlleur - ici le controlleur des différentes pages générées pour créer des buildings, des rooms ou des lights
 public class PagesController {
