@@ -140,7 +140,7 @@
 
 <script>    // Début du script Vuejs
 
-var url = "https://faircorp-benjamin.cleverapps.io/api"     // Variable contenant l'URL de l'API
+var url = "http://localhost:8080/api"     // Variable contenant l'URL de l'API
 
 
 var building_vue = new Vue({    // Création d'une instance de vue appelée building_vue
@@ -153,6 +153,7 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
     roomsFromBuilding: [],   // Rassemblera l'ensemble des rooms d'un building
     lightsFromRoom: [],  // Rassemblera l'ensemble des lightss d'une room
     building_name: '',    // Contiendra le nom d'un building
+    bri: 500,  //contient la valeur de brightness
     color_light: "vert"    // Initialise la couleur d'une light
   },
   created(){    // S'exécute dès le début de l'exécution
@@ -261,6 +262,7 @@ var building_vue = new Vue({    // Création d'une instance de vue appelée buil
 
 
    changeColor: function(light){    // Changement de la couleur d'une light
+    console.log("message envoye");
     var color_url = url + "/lights/" + light.id + "/changeColor/" + this.color_light ;  // On stocke l'URL qui permet de sélectionner une light en fonction de son ID puis on la complète pour définir l'action de changement de couleur en précisant la nouvelle couleur
     axios.put(color_url);   // On utilise Axios pour exécuter une requête PUT utilisant l'URL précédent
   },
