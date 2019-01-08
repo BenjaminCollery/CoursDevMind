@@ -52,17 +52,16 @@ public class MainActivity extends AppCompatActivity {
 
     public Activity context; //Contexte de l'activité
 
-    public List<Building> buildings;
-    public Building building;
-    public List<Room> rooms;
-    public List<Room> roomsSelected;
-    public Room room;
-    public List<Light> lights;
-    public List<Light> lightsSelected;
-    public Light light;
-    public List<String> colors;
-    public String color;
-    public String Text = "Actual Color : ";
+    public List<Building> buildings; //Liste des batiments
+    public Building building; //Batiment sélectionné
+    public List<Room> rooms; //Liste des pièces
+    public List<Room> roomsSelected; //Pièces qui sont dans le batiment sélectionné
+    public Room room;//Pièce sélectionée
+    public List<Light> lights;//Liste des lumières
+    public List<Light> lightsSelected;//Lumières qui sont dans la pièce sélectionnée
+    public Light light;//Lummière sélectionnée
+    public List<String> colors;//Liste des couleurs
+    public String color;//Couleur actuelle
 
 
     //Objet en lien avec l'aspect graphique de l'application
@@ -70,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     public Button buttonRefresh; //Bouton
     public ScrollView scrollView;
     public ProgressBar progressBar;
+
     //Liste déroulante
     public Spinner spinnerBuilding;
     public Spinner spinnerRoom;
@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_context_management);
 
+        //Initialisation de la liste des couleurs
         MainActivity.this.colors = new ArrayList<>();
         colors.add("bleu");
         colors.add("vert");
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         imageButtonLight.setOnClickListener(new AdapterView.OnClickListener() { //On agit quand on clique sur l'objet imageButtonLight
             @Override
             public void onClick(View view) {
-                MainActivity.this.switchLightOnClick(MainActivity.this.light); //On appelle la fonction switchLight qui change l'état de la lampe
+                MainActivity.this.switchLightOnClick(MainActivity.this.light); //On appelle la fonction switchLightOnClick qui change l'état de la lampe
             }                                                           // et qui fait aussi la requête afin de changer en base de données
         });
 
@@ -178,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//Le parametre i correspond à l'di de la lampe parmi toutes les lampes
                 MainActivity.this.light = MainActivity.this.lightsSelected.get(i); //On change la lampe sélectionnée
                 setSpinnerColor(); //On met à jour le spinner des couleurs
-                MainActivity.this.color=MainActivity.this.light.getColor();
-                int index = MainActivity.this.colors.indexOf(MainActivity.this.color);
-                spinnerColor.setSelection(index);
+                MainActivity.this.color=MainActivity.this.light.getColor(); //On met à jour la couleur actuelle
+                int index = MainActivity.this.colors.indexOf(MainActivity.this.color); //On récupère l'indice de la couleur actuelle
+                spinnerColor.setSelection(index); //On place la sélection du spinner sur la bonne couleur
                 set(); //On change l'imageButtonLight si besoin
             }
 
@@ -196,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
                 if (!(MainActivity.this.color.equals(MainActivity.this.colors.get(i)))) {
                     MainActivity.this.color = MainActivity.this.colors.get(i); //On change la couleur sélectionnée
-                    MainActivity.this.switchColorOnCLick(MainActivity.this.light,MainActivity.this.color);//On appelle switchColor qui permet de changer la couleur en base de donnée
+                    MainActivity.this.switchColorOnClick(MainActivity.this.light,MainActivity.this.color);//On appelle switchColorOnClick qui permet de changer la couleur en base de donnée
                 }
             }
 
@@ -297,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
         scrollView.setVisibility(View.INVISIBLE);
+
         //On récupère tous les batiments,pièces et lumières
         getBuildings();
         getRooms();
@@ -371,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
     //Fonction permettant de set SpinnerBuilding
     private void setSpinnerBuilding() {
         List<String> buildings_names = new ArrayList<>();
-        for (Building building : buildings) {//On parcout tous les batiments
+        for (Building building : buildings) {//On parcourt tous les batiments
             buildings_names.add(building.getName()); //On récupère le nom des batiments
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, buildings_names); //On remplit le spinner avec les noms
@@ -451,6 +453,7 @@ public class MainActivity extends AppCompatActivity {
         scrollView.setVisibility(View.INVISIBLE);
     }
 
+    //Fonction qui permet de Switch les light sans faire de requête, à utiliser quand on recoit un message via MQQT
     public void switchLight(Light light) {
         //On change en local
         if (light.getStatus().equals(Status.ON)) {
@@ -463,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //Fonction permettant de changer la couleur des lampes en local et en base de données
-    void switchColorOnCLick(Light light, String color) {
+    void switchColorOnClick(Light light, String color) {
         light.setColor(color);//On change la couleur en local
         //On effectue la requête en base de données
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, urlApiLights +"/" +light.getId().toString() + "/changeColor/" + light.getColor(), null,
@@ -483,13 +486,14 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.this.color=MainActivity.this.light.getColor();
     }
 
+    //Fonction qui permet de Switch les couleurs sans faire de requête, à utiliser quand on recoit un message via MQQT
     void switchColor(Light light, String color) {
-        light.setColor(color);//On change la couleur en local
-        MainActivity.this.color=MainActivity.this.light.getColor();
-        int index = colors.indexOf(color);
-        spinnerColor.setSelection(index,true);
-
+        light.setColor(color);//On change la couleur en local sur la lampe
+        MainActivity.this.color=MainActivity.this.light.getColor();//On change la couleur actuelle
+        int index = colors.indexOf(color);//On recupère l'indice de la couleur parmi la liste des couleurs
+        spinnerColor.setSelection(index,true);//On change la sélection du Spinner
     }
+
     public void getBuildings() {//Fonction effectuant la requete GET pour récupérer tous les batiments, on stock dans responseBuildings
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlApiBuildings, null, responseBuildings, errorListener);
         requestQueue.add(jsonArrayRequest);//On ajoute dans la queue
@@ -512,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
         getBuildings();
     }
 
-
+    //Fonction permettant d'ajouter à l'historique les requetes MQTT
     private void addToHistory(String mainText){
         System.out.println("LOG: " + mainText);
         mAdapter.add(mainText);
