@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.roomproject.MainActivity">
 
+    <!-- Definition de la ProgressBar -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
@@ -51,6 +52,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Definition du TextView pour les batiments -->
                     <TextView
                         android:id="@+id/textViewBuilding"
                         android:layout_width="wrap_content"
@@ -71,6 +73,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <!-- Definition du Spinner pour les batiments -->
                     <Spinner
                         android:id="@+id/spinnerBuilding"
                         android:layout_width="match_parent"
@@ -93,6 +96,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Definition du TextView pour les pièces -->
                     <TextView
                         android:id="@+id/textViewRoom"
                         android:layout_width="wrap_content"
@@ -113,6 +117,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <!-- Definition du Spinner pour les pièces -->
                     <Spinner
                         android:id="@+id/spinnerRoom"
                         android:layout_width="match_parent"
@@ -135,6 +140,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Definition du TextView pour les lumières -->
                     <TextView
                         android:id="@+id/textViewLight"
                         android:layout_width="wrap_content"
@@ -155,6 +161,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <!-- Definition du Spinner pour les lumières -->
                     <Spinner
                         android:id="@+id/spinnerLight"
                         android:layout_width="match_parent"
@@ -178,6 +185,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <!-- Definition du ImageButton représentant l'état de la lampe -->
                     <ImageButton
                         android:id="@+id/imageButtonLight"
                         android:layout_width="match_parent"
@@ -242,6 +250,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Definition du TextView pour les couleurs -->
                     <TextView
                         android:id="@+id/textViewColor"
                         android:layout_width="wrap_content"
@@ -262,6 +271,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <!-- Definition du Spinner pour les couleurs -->
                     <Spinner
                         android:id="@+id/spinnerColor"
                         android:layout_width="match_parent"
@@ -309,6 +319,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal">
 
+                <!-- Definition du Button Refresh -->
                 <Button
                     android:id="@+id/buttonRef"
                     android:layout_width="match_parent"
